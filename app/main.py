@@ -86,7 +86,7 @@ async def summarize_comments(request: SummaryRequest):
         comments = item.get("comments", [])
         if not comments:
             continue
-        joined = " / ".join([c.get("original", "") for c in comments if c.get("original")])
+        joined = " / ".join([clip_text(c.get("original", ""), 280) for c in comments if c.get("original")])
         if joined:
             payload.append(f"{label}: {joined}")
 
@@ -94,7 +94,10 @@ async def summarize_comments(request: SummaryRequest):
         raise HTTPException(status_code=400, detail="No comments provided")
 
     async with get_client() as client:
-        summary = await summarize_comments_overview(client, query, "\n".join(payload))
+        try:
+            summary = await summarize_comments_overview(client, query, "\n".join(payload))
+        except Exception:
+            summary = "暂时无法生成 AI 总结，请稍后再试。"
 
     return {"summary": summary}
 
@@ -116,7 +119,10 @@ async def summarize_news(request: SummaryRequest):
         raise HTTPException(status_code=400, detail="No summaries provided")
 
     async with get_client() as client:
-        summary = await summarize_news_overview(client, query, "\n".join(payload))
+        try:
+            summary = await summarize_news_overview(client, query, "\n".join(payload))
+        except Exception:
+            summary = "暂时无法生成 AI 总结，请稍后再试。"
 
     return {"summary": summary}
 

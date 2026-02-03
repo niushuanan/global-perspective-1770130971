@@ -13,6 +13,7 @@ class LanguageConfig:
     google_gl: str
     google_ceid: str
     mymemory_lang: str
+    gdelt_sourcelang: str
 
 
 LANGUAGES = [
@@ -27,6 +28,7 @@ LANGUAGES = [
         google_gl="CN",
         google_ceid="CN:zh-Hans",
         mymemory_lang="zh-CN",
+        gdelt_sourcelang="chinese",
     ),
     LanguageConfig(
         key="en",
@@ -39,6 +41,7 @@ LANGUAGES = [
         google_gl="US",
         google_ceid="US:en",
         mymemory_lang="en",
+        gdelt_sourcelang="english",
     ),
     LanguageConfig(
         key="ja",
@@ -51,6 +54,7 @@ LANGUAGES = [
         google_gl="JP",
         google_ceid="JP:ja",
         mymemory_lang="ja",
+        gdelt_sourcelang="japanese",
     ),
     LanguageConfig(
         key="de",
@@ -63,6 +67,7 @@ LANGUAGES = [
         google_gl="DE",
         google_ceid="DE:de",
         mymemory_lang="de",
+        gdelt_sourcelang="german",
     ),
     LanguageConfig(
         key="fr",
@@ -75,6 +80,7 @@ LANGUAGES = [
         google_gl="FR",
         google_ceid="FR:fr",
         mymemory_lang="fr",
+        gdelt_sourcelang="french",
     ),
     LanguageConfig(
         key="es",
@@ -87,6 +93,7 @@ LANGUAGES = [
         google_gl="ES",
         google_ceid="ES:es",
         mymemory_lang="es",
+        gdelt_sourcelang="spanish",
     ),
     LanguageConfig(
         key="pt",
@@ -99,5 +106,6 @@ LANGUAGES = [
         google_gl="BR",
         google_ceid="BR:pt-419",
         mymemory_lang="pt",
+        gdelt_sourcelang="portuguese",
     ),
 ]

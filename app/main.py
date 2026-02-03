@@ -129,7 +129,7 @@ async def fetch_video_for_lang(client, lang, query: str) -> dict[str, Any]:
                 "key": lang.key,
                 "label": lang.label,
                 "emoji": lang.emoji,
-                "error": "未找到视频",
+                "error": "未找到视频或未配置 YouTube API Key",
             }
 
         comments = await fetch_comments(client, video["videoId"], lang)
@@ -193,12 +193,17 @@ async def fetch_news_for_lang(client, lang, query: str) -> dict[str, Any]:
                 break
 
         if not article:
-            return {
-                "key": lang.key,
-                "label": lang.label,
-                "emoji": lang.emoji,
-                "error": "未找到可免费访问的新闻页面",
-            }
+            fallback_text = ""
+            if chosen and chosen.get("title"):
+                fallback_text = chosen.get("title", "")
+            if not fallback_text:
+                return {
+                    "key": lang.key,
+                    "label": lang.label,
+                    "emoji": lang.emoji,
+                    "error": "未找到可免费访问的新闻页面",
+                }
+            article = {"title": chosen.get("title", ""), "text": fallback_text, "source": chosen.get("source", "")}
 
         try:
             summary = await summarize_article(

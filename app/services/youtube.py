@@ -4,13 +4,13 @@ from app.core.config import settings
 async def search_video(client, query: str, lang) -> dict | None:
     if settings.youtube_api_key:
         return await _search_youtube_api(client, query, lang)
-    return await _search_invidious(client, query)
+    return await _search_invidious_fallback(client, query)
 
 
 async def fetch_comments(client, video_id: str, lang) -> list[dict]:
     if settings.youtube_api_key:
         return await _fetch_comments_api(client, video_id)
-    return await _fetch_comments_invidious(client, video_id)
+    return await _fetch_comments_invidious_fallback(client, video_id)
 
 
 async def _search_youtube_api(client, query: str, lang) -> dict | None:
@@ -67,40 +67,53 @@ async def _fetch_comments_api(client, video_id: str) -> list[dict]:
     return results
 
 
-async def _search_invidious(client, query: str) -> dict | None:
+async def _search_invidious_fallback(client, query: str) -> dict | None:
     params = {"q": query, "type": "video", "sort_by": "relevance"}
-    response = await client.get(f"{settings.invidious_base_url.rstrip('/')}/api/v1/search", params=params)
-    response.raise_for_status()
-    data = response.json()
-    if not data:
-        return None
-    item = data[0]
-    video_id = item.get("videoId")
-    if not video_id:
-        return None
-    return {
-        "videoId": video_id,
-        "title": item.get("title", ""),
-        "channel": item.get("author", ""),
-        "url": f"https://www.youtube.com/watch?v={video_id}",
-    }
+    last_error = None
+    for base_url in settings.invidious_instances:
+        try:
+            response = await client.get(f"{base_url.rstrip('/')}/api/v1/search", params=params)
+            if response.status_code >= 400:
+                last_error = response.status_code
+                continue
+            data = response.json()
+            if not data:
+                continue
+            item = data[0]
+            video_id = item.get("videoId")
+            if not video_id:
+                continue
+            return {
+                "videoId": video_id,
+                "title": item.get("title", ""),
+                "channel": item.get("author", ""),
+                "url": f"https://www.youtube.com/watch?v={video_id}",
+            }
+        except Exception as exc:  # pragma: no cover - best effort fallback
+            last_error = exc
+            continue
+    if last_error:
+        raise RuntimeError("Invidious fallback failed")
+    return None
 
 
-async def _fetch_comments_invidious(client, video_id: str) -> list[dict]:
+async def _fetch_comments_invidious_fallback(client, video_id: str) -> list[dict]:
     from bs4 import BeautifulSoup
-    response = await client.get(
-        f"{settings.invidious_base_url.rstrip('/')}/api/v1/comments/{video_id}",
-        params={"sort_by": "top"},
-    )
-    if response.status_code >= 400:
-        return []
-    data = response.json()
-    comments = data.get("comments", [])
-    results = []
-    for item in comments[:5]:
-        content = item.get("content") or item.get("contentHtml") or ""
-        if content:
-            cleaned = BeautifulSoup(content, "html.parser").get_text(" ", strip=True)
-            if cleaned:
-                results.append({"original": cleaned})
-    return results
+    for base_url in settings.invidious_instances:
+        response = await client.get(
+            f"{base_url.rstrip('/')}/api/v1/comments/{video_id}",
+            params={"sort_by": "top"},
+        )
+        if response.status_code >= 400:
+            continue
+        data = response.json()
+        comments = data.get("comments", [])
+        results = []
+        for item in comments[:5]:
+            content = item.get("content") or item.get("contentHtml") or ""
+            if content:
+                cleaned = BeautifulSoup(content, "html.parser").get_text(" ", strip=True)
+                if cleaned:
+                    results.append({"original": cleaned})
+        return results
+    return []

@@ -587,13 +587,14 @@
       videoCardsEl.innerHTML = items
         .map((item) => {
           if (item.error) {
+            const message = formatVideoError(item.error);
             return `
               <div class="card">
                 <div class="card-header">
                   <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
                   <span class="badge">YouTube</span>
                 </div>
-                <div class="error-box">${item.error}</div>
+                <div class="error-box">${message}</div>
               </div>
             `;
           }
@@ -626,13 +627,14 @@
       newsCardsEl.innerHTML = items
         .map((item) => {
           if (item.error) {
+            const message = formatNewsError(item.error);
             return `
               <div class="card">
                 <div class="card-header">
                   <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
                   <span class="badge">News</span>
                 </div>
-                <div class="error-box">${item.error}</div>
+                <div class="error-box">${message}</div>
               </div>
             `;
           }
@@ -734,6 +736,24 @@
         return;
       }
 
+      if (type === "video") {
+        const hasComments = state.videoItems.some((item) => (item.comments || []).length > 0);
+        if (!hasComments) {
+          videoSummaryEl.classList.add("active");
+          videoSummaryEl.innerHTML = "<p>暂无可用评论可总结，请稍后重试。</p>";
+          return;
+        }
+      }
+
+      if (type === "news") {
+        const hasSummaries = state.newsItems.some((item) => item.summary);
+        if (!hasSummaries) {
+          newsSummaryEl.classList.add("active");
+          newsSummaryEl.innerHTML = "<p>暂无可用新闻摘要可总结，请稍后重试。</p>";
+          return;
+        }
+      }
+
       const panel = type === "video" ? videoSummaryEl : newsSummaryEl;
       panel.classList.add("active");
       panel.innerHTML = "<p>AI 正在生成总结...</p>";
@@ -761,6 +781,28 @@
       resultsEl.classList.remove("active");
       homeEl.style.display = "flex";
       searchInput.focus();
+    }
+
+    function formatVideoError(error) {
+      if (!error) return "视频获取失败";
+      if (error.includes("YouTube API")) {
+        return "未配置 YouTube API Key，无法获取评论";
+      }
+      if (error.includes("Invidious") || error.includes("403")) {
+        return "公共接口被拒绝访问，请稍后重试";
+      }
+      return "视频获取失败";
+    }
+
+    function formatNewsError(error) {
+      if (!error) return "新闻获取失败";
+      if (error.includes("未找到新闻结果")) {
+        return "暂时未找到相关新闻";
+      }
+      if (error.includes("未找到可免费访问")) {
+        return "页面可能为付费内容，已自动跳过";
+      }
+      return "新闻获取失败";
     }
 
     document.getElementById("searchBtn").addEventListener("click", startSearch);

@@ -43,11 +43,6 @@ def _looks_like_paywall(html: str, text: str) -> bool:
     lowered = html.lower()
     if any(keyword in lowered for keyword in PAYWALL_KEYWORDS):
         return True
-
-    stripped = re.sub(r"\s+", " ", text).strip()
-    if len(stripped) < 350:
-        return True
-
     return False
 
 

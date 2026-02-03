@@ -8,7 +8,8 @@ async def search_news(client, query: str, lang) -> list[dict]:
     results: list[dict] = []
     results.extend(await _search_gdelt(client, query, lang))
     results.extend(await _search_google_news_rss(client, query, lang))
-    results.extend(await _search_bing_news_rss(client, query, lang))
+    if settings.enable_bing_rss:
+        results.extend(await _search_bing_news_rss(client, query, lang))
     return _dedupe_results(results)
 
 

@@ -50,6 +50,7 @@ class Settings:
     )
 
     gdelt_timespan: str = os.getenv("GDELT_TIMESPAN", "30d")
+    enable_bing_rss: bool = os.getenv("ENABLE_BING_RSS", "false").lower() in {"1", "true", "yes"}
 
     http_timeout: float = float(os.getenv("HTTP_TIMEOUT", "18"))
     max_concurrency: int = int(os.getenv("MAX_CONCURRENCY", "6"))

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全球视角 | 跨语言观点对比</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Zilla+Slab:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --ink: #10131a;
+      --muted: #5b6270;
+      --paper: #f6f4ef;
+      --paper-strong: #ffffff;
+      --line: #e3e2dd;
+      --accent: #0b4f6c;
+      --accent-2: #f2a04a;
+      --shadow: 0 16px 36px rgba(12, 22, 35, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #eef2f5 0%, transparent 45%),
+        radial-gradient(circle at 80% 20%, #fff2df 0%, transparent 40%),
+        var(--paper);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(transparent 23px, rgba(16, 19, 26, 0.04) 24px),
+        linear-gradient(90deg, transparent 23px, rgba(16, 19, 26, 0.04) 24px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .brand .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 6px rgba(11, 79, 108, 0.1);
+    }
+
+    .home {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .home h1 {
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .home p {
+      max-width: 640px;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .search-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .search-box button {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 12px 22px rgba(11, 79, 108, 0.2);
+    }
+
+    .search-box button:hover {
+      transform: translateY(-1px);
+    }
+
+    .assist {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .assist span {
+      background: rgba(11, 79, 108, 0.08);
+      color: var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .results {
+      display: none;
+      flex-direction: column;
+      gap: 32px;
+      animation: fadeUp 0.6s ease;
+    }
+
+    .results.active {
+      display: flex;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .query-card {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--muted);
+      transition: border 0.2s ease, color 0.2s ease;
+    }
+
+    .ghost-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .module {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .module-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .module-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-title h2 {
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+      font-size: 28px;
+    }
+
+    .module-title p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .module-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .ai-btn {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ai-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(242, 160, 74, 0.18);
+      color: #a55a0e;
+    }
+
+    .status-pill.ready {
+      background: rgba(11, 79, 108, 0.14);
+      color: var(--accent);
+    }
+
+    .pipeline {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pipeline span {
+      background: #f3f5f7;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .summary-panel {
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fafaf9;
+      display: none;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .summary-panel.active {
+      display: block;
+    }
+
+    .summary-panel h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+    }
+
+    .summary-panel p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 260px;
+      animation: fadeUp 0.5s ease;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .lang-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(11, 79, 108, 0.08);
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .comment {
+      border-top: 1px dashed var(--line);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .comment:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .comment .original {
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .comment .translated {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f3f4f6, #e9edf1, #f3f4f6);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+      border-radius: 12px;
+      height: 14px;
+    }
+
+    .skeleton-block {
+      height: 160px;
+    }
+
+    .news-summary {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .news-summary strong {
+      color: var(--ink);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+    }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .search-box {
+        grid-template-columns: 1fr;
+        border-radius: 20px;
+        padding: 12px;
+      }
+
+      .search-box button {
+        width: 100%;
+      }
+
+      .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .module {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <section class="home" id="home">
+      <div class="brand">
+        <span class="dot"></span>
+        Global Perspective Engine
+      </div>
+      <h1>一个输入，自动对比全球叙事。</h1>
+      <p>
+        输入事件关键词，系统并行抓取多语言 YouTube 评论与新闻报道，自动翻译成中文并生成总结，帮助普通用户快速理解世界各地对同一事件的看法。
+      </p>
+      <div class="search-box">
+        <input id="searchInput" type="text" placeholder="例如：红海航运危机" value="红海航运危机" />
+        <button id="searchBtn">开始对比</button>
+      </div>
+      <div class="assist">
+        <span>多语言覆盖</span>
+        中文 · 英文 · 日文 · 德语 · 法语 · 西班牙语 · 葡萄牙语
+      </div>
+    </section>
+
+    <section class="results" id="results">
+      <div class="results-header">
+        <div class="query-card">事件关键词：<span id="queryText">-</span></div>
+        <button class="ghost-btn" id="resetBtn">重新搜索</button>
+      </div>
+
+      <div class="module" id="videoModule">
+        <div class="module-header">
+          <div class="module-title">
+            <h2>多语言视频评论分析</h2>
+            <span class="status-pill" id="videoStatus">等待检索</span>
+          </div>
+          <p>系统自动从 YouTube 各语言环境中选择首条视频，抓取前五条评论并翻译成中文。</p>
+          <div class="module-actions">
+            <button class="ai-btn" id="videoSummaryBtn" data-module="video" disabled>AI 总结</button>
+            <div class="pipeline">
+              <span>多语言检索</span>
+              <span>首条视频</span>
+              <span>评论抓取</span>
+              <span>中文翻译</span>
+            </div>
+          </div>
+        </div>
+        <div class="summary-panel" id="videoSummary"></div>
+        <div class="cards" id="videoCards"></div>
+      </div>
+
+      <div class="module" id="newsModule">
+        <div class="module-header">
+          <div class="module-title">
+            <h2>多语言新闻报道分析</h2>
+            <span class="status-pill" id="newsStatus">等待检索</span>
+          </div>
+          <p>系统自动从 Google 搜索中筛选可免费阅读的新闻页面，提取正文后生成中等长度摘要与中文翻译。</p>
+          <div class="module-actions">
+            <button class="ai-btn" id="newsSummaryBtn" data-module="news" disabled>AI 总结</button>
+            <div class="pipeline">
+              <span>多语言检索</span>
+              <span>广告/付费过滤</span>
+              <span>正文抓取</span>
+              <span>摘要生成</span>
+            </div>
+          </div>
+        </div>
+        <div class="summary-panel" id="newsSummary"></div>
+        <div class="cards" id="newsCards"></div>
+      </div>
+
+      <div class="footnote">所有结果均为自动化流程展示，可扩展至更多语言与平台。</div>
+    </section>
+  </div>
+
+  <script>
+    const LANGS = [
+      {
+        key: "zh",
+        label: "中文",
+        emoji: "🇨🇳",
+        videoTitle: "{q}对全球航运的影响持续扩大",
+        videoChannel: "央视国际视角",
+        comments: [
+          {
+            original: "{q}的根源还是区域冲突外溢，单靠护航解决不了。",
+            zh: "{q}的根源还是区域冲突外溢，单靠护航解决不了。"
+          },
+          {
+            original: "航运企业的压力会传导到国内制造业和外贸。",
+            zh: "航运企业的压力会传导到国内制造业和外贸。"
+          },
+          {
+            original: "如果能够建立多边护航机制，对稳定预期会更有效。",
+            zh: "如果能够建立多边护航机制，对稳定预期会更有效。"
+          },
+          {
+            original: "希望尽快停火，不然所有人都要为成本买单。",
+            zh: "希望尽快停火，不然所有人都要为成本买单。"
+          },
+          {
+            original: "{q}也让陆路通道价值凸显，值得长期布局。",
+            zh: "{q}也让陆路通道价值凸显，值得长期布局。"
+          }
+        ],
+        news: {
+          source: "新华社",
+          headline: "{q}引发航运链路重构，多方呼吁建立护航合作",
+          summary:
+            "报道梳理了事件对全球航运的冲击，指出运价上涨与延误叠加影响制造业。文中强调区域冲突溢出效应，呼吁通过多边协商与停火机制降低风险。",
+          summaryZh:
+            "报道梳理了事件对全球航运的冲击，指出运价上涨与延误叠加影响制造业。文中强调区域冲突溢出效应，呼吁通过多边协商与停火机制降低风险。"
+        }
+      },
+      {
+        key: "en",
+        label: "English",
+        emoji: "🇺🇸",
+        videoTitle: "{q}: Shipping routes rerouted and costs surge",
+        videoChannel: "Global Trade Watch",
+        comments: [
+          {
+            original: "{q} feels like another reminder that global supply chains are fragile.",
+            zh: "{q}再次提醒全球供应链非常脆弱。"
+          },
+          {
+            original: "Consumers will see this in prices within weeks, not months.",
+            zh: "消费者会在几周内看到价格上涨，而不是几个月后。"
+          },
+          {
+            original: "Security operations matter, but diplomacy is the only long-term fix.",
+            zh: "安全行动重要，但外交才是长期解决方案。"
+          },
+          {
+            original: "We need more transparency about who pays for the rerouting.",
+            zh: "需要更透明地说明改道成本由谁承担。"
+          },
+          {
+            original: "{q} is a wake-up call for resilience planning.",
+            zh: "{q}是对供应链韧性规划的一次警醒。"
+          }
+        ],
+        news: {
+          source: "Reuters",
+          headline: "{q} drives up freight rates as shippers seek safer routes",
+          summary:
+            "The report describes how shipping firms are diverting vessels, raising insurance and fuel costs. It highlights the immediate inflation risk for consumer goods and notes policymakers are weighing a mix of naval patrols and diplomatic talks.",
+          summaryZh:
+            "报道指出航运公司改道导致保险与燃油成本上升，推高运价。文章强调消费品通胀风险，并提到各国正在权衡海军护航与外交谈判的组合方案。"
+        }
+      },
+      {
+        key: "ja",
+        label: "日本語",
+        emoji: "🇯🇵",
+        videoTitle: "{q}で物流遅延、企業は代替ルートを模索",
+        videoChannel: "日経アジア視点",
+        comments: [
+          {
+            original: "{q}の影響で部品調達が遅れそう。",
+            zh: "{q}的影响可能导致零部件采购延迟。"
+          },
+          {
+            original: "海上輸送だけに頼るのはリスクが高い。",
+            zh: "只依赖海运风险太高。"
+          },
+          {
+            original: "政治的な対立が経済に直結している。",
+            zh: "政治对立直接影响经济。"
+          },
+          {
+            original: "企業は在庫戦略を見直すべき。",
+            zh: "企业应重新审视库存策略。"
+          },
+          {
+            original: "{q}は中長期の供給網再編につながる。",
+            zh: "{q}可能引发中长期的供应链重组。"
+          }
+        ],
+        news: {
+          source: "NHK",
+          headline: "{q}で海上輸送混乱、企業が調達計画を調整",
+          summary:
+            "記事は海運の混乱が製造業の調達スケジュールに影響していると伝える。政府は安全確保と外交的働きかけの両面で対応を検討している。",
+          summaryZh:
+            "报道指出海运混乱影响制造业采购计划，政府正在从安全保障与外交沟通两方面考虑应对方案。"
+        }
+      },
+      {
+        key: "de",
+        label: "Deutsch",
+        emoji: "🇩🇪",
+        videoTitle: "{q}: Europas Industrie spürt die Lieferketten",
+        videoChannel: "DW Wirtschaft",
+        comments: [
+          {
+            original: "{q} zeigt, wie verletzlich die europäische Industrie ist.",
+            zh: "{q}显示出欧洲工业的脆弱性。"
+          },
+          {
+            original: "Die Energiepreise reagieren sofort auf diese Krise.",
+            zh: "能源价格会立刻对这场危机作出反应。"
+          },
+          {
+            original: "Ohne politische Lösung bleibt nur teures Krisenmanagement.",
+            zh: "如果没有政治解决方案，只能进行昂贵的危机管理。"
+          },
+          {
+            original: "Unternehmen müssen ihre Lagerhaltung anpassen.",
+            zh: "企业需要调整库存管理。"
+          },
+          {
+            original: "{q} könnte den Trend zu regionalen Lieferketten beschleunigen.",
+            zh: "{q}可能加速区域化供应链趋势。"
+          }
+        ],
+        news: {
+          source: "Der Spiegel",
+          headline: "{q} belastet Handel und Inflation in Europa",
+          summary:
+            "Der Bericht analysiert steigende Frachtkosten und ihre Folgen für Verbraucherpreise. Er betont die Rolle europäischer Sicherheitsmissionen und die Sorge vor einer langfristigen Störung des Welthandels.",
+          summaryZh:
+            "报道分析运价上涨对消费价格的影响，强调欧洲安全行动的重要性，并担忧全球贸易长期受扰。"
+        }
+      },
+      {
+        key: "fr",
+        label: "Français",
+        emoji: "🇫🇷",
+        videoTitle: "{q} et la sécurité maritime, quelles réponses?",
+        videoChannel: "France 24 Décryptage",
+        comments: [
+          {
+            original: "{q} montre que la sécurité maritime est un bien public.",
+            zh: "{q}表明海上安全是一种公共产品。"
+          },
+          {
+            original: "Sans cesse, les coûts logistiques montent.",
+            zh: "物流成本持续上升。"
+          },
+          {
+            original: "Il faut éviter une escalade militaire supplémentaire.",
+            zh: "需要避免进一步的军事升级。"
+          },
+          {
+            original: "Les entreprises européennes vont souffrir rapidement.",
+            zh: "欧洲企业会很快受到冲击。"
+          },
+          {
+            original: "{q} met en lumière la dépendance aux routes maritimes.",
+            zh: "{q}凸显了对海上航线的依赖。"
+          }
+        ],
+        news: {
+          source: "Le Monde",
+          headline: "{q} ravive les débats sur la sécurité des routes maritimes",
+          summary:
+            "L'article souligne l'impact sur les flux commerciaux et les prix de l'énergie. Il rapporte que les autorités européennes cherchent une réponse coordonnée, entre présence navale et initiatives diplomatiques.",
+          summaryZh:
+            "文章强调对贸易流与能源价格的影响，并称欧洲正在寻求海军存在与外交倡议并行的协调回应。"
+        }
+      },
+      {
+        key: "es",
+        label: "Español",
+        emoji: "🇪🇸",
+        videoTitle: "{q}: impacto en el comercio y en los precios",
+        videoChannel: "El País Economía",
+        comments: [
+          {
+            original: "{q} afecta directamente al coste de vida.",
+            zh: "{q}直接影响生活成本。"
+          },
+          {
+            original: "Las navieras están trasladando el coste a los clientes.",
+            zh: "航运公司正在把成本转嫁给客户。"
+          },
+          {
+            original: "Hace falta un acuerdo político para estabilizar la región.",
+            zh: "需要政治协议来稳定地区。"
+          },
+          {
+            original: "Europa no puede depender de un solo corredor marítimo.",
+            zh: "欧洲不能只依赖单一海上通道。"
+          },
+          {
+            original: "{q} demuestra la fragilidad del comercio global.",
+            zh: "{q}显示出全球贸易的脆弱性。"
+          }
+        ],
+        news: {
+          source: "El País",
+          headline: "{q} tensiona las cadenas de suministro y acelera la inflación",
+          summary:
+            "La crónica explica cómo el desvío de buques encarece el transporte y reduce la previsibilidad logística. También recoge las presiones para una solución diplomática que evite mayores disrupciones.",
+          summaryZh:
+            "报道说明船只改道推高运输成本并降低物流可预期性，同时提及各方对外交解决的压力以避免更大扰动。"
+        }
+      },
+      {
+        key: "pt",
+        label: "Português",
+        emoji: "🇧🇷",
+        videoTitle: "{q}: riscos para o comércio e energia",
+        videoChannel: "Globo News Panorama",
+        comments: [
+          {
+            original: "{q} pressiona os custos de importação.",
+            zh: "{q}推高了进口成本。"
+          },
+          {
+            original: "As rotas alternativas são mais longas e caras.",
+            zh: "替代航线更长也更昂贵。"
+          },
+          {
+            original: "É preciso reduzir a tensão política para evitar novas crises.",
+            zh: "需要降低政治紧张以避免新的危机。"
+          },
+          {
+            original: "O impacto chega rápido aos preços internos.",
+            zh: "影响会很快传导到国内价格。"
+          },
+          {
+            original: "{q} reforça a necessidade de diversificar logística.",
+            zh: "{q}强化了物流多元化的必要性。"
+          }
+        ],
+        news: {
+          source: "Folha de S.Paulo",
+          headline: "{q} eleva custos do frete e preocupa indústrias",
+          summary:
+            "O texto relata aumento de prazos e custos no transporte, com reflexo nos preços de bens importados. Especialistas apontam que a solução passa por coordenação internacional e redução das tensões regionais.",
+          summaryZh:
+            "报道提到运输时效与成本上升，影响进口商品价格。专家认为需要国际协调与降低区域紧张才能缓解风险。"
+        }
+      }
+    ];
+
+    const state = {
+      query: "",
+      video: { status: "idle", items: [] },
+      news: { status: "idle", items: [] },
+      summaryOpen: { video: false, news: false }
+    };
+
+    const homeEl = document.getElementById("home");
+    const resultsEl = document.getElementById("results");
+    const queryTextEl = document.getElementById("queryText");
+    const searchInput = document.getElementById("searchInput");
+    const videoStatusEl = document.getElementById("videoStatus");
+    const newsStatusEl = document.getElementById("newsStatus");
+    const videoCardsEl = document.getElementById("videoCards");
+    const newsCardsEl = document.getElementById("newsCards");
+    const videoSummaryBtn = document.getElementById("videoSummaryBtn");
+    const newsSummaryBtn = document.getElementById("newsSummaryBtn");
+    const videoSummaryEl = document.getElementById("videoSummary");
+    const newsSummaryEl = document.getElementById("newsSummary");
+
+    function interpolate(text, query) {
+      return text.replace(/\{q\}/g, query);
+    }
+
+    function buildVideoData(query) {
+      return LANGS.map((lang) => ({
+        ...lang,
+        videoTitle: interpolate(lang.videoTitle, query),
+        comments: lang.comments.map((comment) => ({
+          original: interpolate(comment.original, query),
+          zh: interpolate(comment.zh, query)
+        }))
+      }));
+    }
+
+    function buildNewsData(query) {
+      return LANGS.map((lang) => ({
+        ...lang,
+        headline: interpolate(lang.news.headline, query),
+        summary: interpolate(lang.news.summary, query),
+        summaryZh: interpolate(lang.news.summaryZh, query)
+      }));
+    }
+
+    function renderSkeletonCards(targetEl) {
+      targetEl.innerHTML = LANGS.map(
+        () => `
+          <div class="card">
+            <div class="skeleton" style="width: 60%;"></div>
+            <div class="skeleton" style="width: 90%;"></div>
+            <div class="skeleton" style="width: 72%;"></div>
+            <div class="skeleton" style="width: 88%;"></div>
+            <div class="skeleton skeleton-block"></div>
+          </div>
+        `
+      ).join("");
+    }
+
+    function renderVideoCards() {
+      if (state.video.status !== "ready") {
+        renderSkeletonCards(videoCardsEl);
+        return;
+      }
+
+      videoCardsEl.innerHTML = state.video.items
+        .map(
+          (item) => `
+          <div class="card">
+            <div class="card-header">
+              <div class="lang-title">
+                <span>${item.emoji}</span>
+                <span>${item.label}</span>
+              </div>
+              <span class="badge">YouTube</span>
+            </div>
+            <div class="meta">代表视频：${item.videoTitle}</div>
+            <div class="meta">频道：${item.videoChannel}</div>
+            <div class="divider"></div>
+            ${item.comments
+              .map(
+                (comment) => `
+                <div class="comment">
+                  <div class="original">${comment.original}</div>
+                  <div class="translated">${comment.zh}</div>
+                </div>
+              `
+              )
+              .join("")}
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function renderNewsCards() {
+      if (state.news.status !== "ready") {
+        renderSkeletonCards(newsCardsEl);
+        return;
+      }
+
+      newsCardsEl.innerHTML = state.news.items
+        .map(
+          (item) => `
+          <div class="card">
+            <div class="card-header">
+              <div class="lang-title">
+                <span>${item.emoji}</span>
+                <span>${item.label}</span>
+              </div>
+              <span class="badge">News</span>
+            </div>
+            <div class="meta">来源：${item.news.source}</div>
+            <div class="meta">标题：${item.headline}</div>
+            <div class="divider"></div>
+            <div class="news-summary"><strong>摘要：</strong>${item.summary}</div>
+            <div class="news-summary"><strong>中文译文：</strong>${item.summaryZh}</div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function updateStatus() {
+      videoStatusEl.textContent =
+        state.video.status === "ready" ? "评论已就绪" : "正在抓取评论";
+      newsStatusEl.textContent =
+        state.news.status === "ready" ? "新闻已就绪" : "正在抓取新闻";
+
+      videoStatusEl.classList.toggle("ready", state.video.status === "ready");
+      newsStatusEl.classList.toggle("ready", state.news.status === "ready");
+
+      videoSummaryBtn.disabled = state.video.status !== "ready";
+      newsSummaryBtn.disabled = state.news.status !== "ready";
+    }
+
+    function renderSummaries() {
+      videoSummaryEl.classList.toggle("active", state.summaryOpen.video);
+      newsSummaryEl.classList.toggle("active", state.summaryOpen.news);
+    }
+
+    function generateVideoSummary(query) {
+      return `
+        <h3>AI 总结 · 多语言评论态度</h3>
+        <p>围绕“${query}”，各语言评论普遍关注物流成本、供应链稳定与安全行动效果。</p>
+        <p>欧美评论更强调经济成本与政府透明度；亚洲评论强调冲突根源与多边协作；拉美评论强调进口价格压力与路线多元化。</p>
+        <p>整体情绪偏谨慎，担忧成本传导，但对外交缓和仍抱有期待。</p>
+      `;
+    }
+
+    function generateNewsSummary(query) {
+      return `
+        <h3>AI 总结 · 多国媒体报道差异</h3>
+        <p>报道普遍将“${query}”描述为对航运与通胀的压力源，但角度有所区别。</p>
+        <p>英语与德语媒体强调运价与安全行动的政策选择；法语与西语更强调外交与地区稳定；中文媒体突出冲突外溢与多边护航机制。</p>
+        <p>整体报道基调以风险提醒为主，同时强调长期供应链重构的趋势。</p>
+      `;
+    }
+
+    function toggleSummary(kind) {
+      if (state[kind].status !== "ready") {
+        return;
+      }
+
+      state.summaryOpen[kind] = !state.summaryOpen[kind];
+
+      if (kind === "video") {
+        videoSummaryEl.innerHTML = generateVideoSummary(state.query);
+      } else {
+        newsSummaryEl.innerHTML = generateNewsSummary(state.query);
+      }
+
+      renderSummaries();
+    }
+
+    function startSearch() {
+      const query = searchInput.value.trim();
+      if (!query) {
+        searchInput.focus();
+        return;
+      }
+
+      state.query = query;
+      state.video.status = "loading";
+      state.news.status = "loading";
+      state.video.items = [];
+      state.news.items = [];
+      state.summaryOpen = { video: false, news: false };
+
+      queryTextEl.textContent = query;
+      homeEl.style.display = "none";
+      resultsEl.classList.add("active");
+
+      renderSkeletonCards(videoCardsEl);
+      renderSkeletonCards(newsCardsEl);
+      updateStatus();
+      renderSummaries();
+
+      setTimeout(() => {
+        state.video.items = buildVideoData(query);
+        state.video.status = "ready";
+        renderVideoCards();
+        updateStatus();
+      }, 800);
+
+      setTimeout(() => {
+        state.news.items = buildNewsData(query);
+        state.news.status = "ready";
+        renderNewsCards();
+        updateStatus();
+      }, 1100);
+    }
+
+    function resetSearch() {
+      resultsEl.classList.remove("active");
+      homeEl.style.display = "flex";
+      searchInput.focus();
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", startSearch);
+    document.getElementById("resetBtn").addEventListener("click", resetSearch);
+    videoSummaryBtn.addEventListener("click", () => toggleSummary("video"));
+    newsSummaryBtn.addEventListener("click", () => toggleSummary("news"));
+
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        startSearch();
+      }
+    });
+
+    renderVideoCards();
+    renderNewsCards();
+  </script>
+</body>
+</html>

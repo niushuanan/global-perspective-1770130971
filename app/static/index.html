@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全球视角 | 跨语言观点对比</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Zilla+Slab:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --ink: #10131a;
+      --muted: #5b6270;
+      --paper: #f6f4ef;
+      --paper-strong: #ffffff;
+      --line: #e3e2dd;
+      --accent: #0b4f6c;
+      --accent-2: #f2a04a;
+      --shadow: 0 16px 36px rgba(12, 22, 35, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #eef2f5 0%, transparent 45%),
+        radial-gradient(circle at 80% 20%, #fff2df 0%, transparent 40%),
+        var(--paper);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(transparent 23px, rgba(16, 19, 26, 0.04) 24px),
+        linear-gradient(90deg, transparent 23px, rgba(16, 19, 26, 0.04) 24px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .brand .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 6px rgba(11, 79, 108, 0.1);
+    }
+
+    .home {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 32px;
+      animation: fadeUp 0.8s ease;
+    }
+
+    .home h1 {
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .home p {
+      max-width: 640px;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .search-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .search-box button {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 12px 22px rgba(11, 79, 108, 0.2);
+    }
+
+    .search-box button:hover {
+      transform: translateY(-1px);
+    }
+
+    .assist {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .assist span {
+      background: rgba(11, 79, 108, 0.08);
+      color: var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .results {
+      display: none;
+      flex-direction: column;
+      gap: 32px;
+      animation: fadeUp 0.6s ease;
+    }
+
+    .results.active {
+      display: flex;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .query-card {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--muted);
+      transition: border 0.2s ease, color 0.2s ease;
+    }
+
+    .ghost-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .module {
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .module-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .module-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-title h2 {
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+      font-size: 28px;
+    }
+
+    .module-title p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .module-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .ai-btn {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ai-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .status-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(242, 160, 74, 0.18);
+      color: #a55a0e;
+    }
+
+    .status-pill.ready {
+      background: rgba(11, 79, 108, 0.14);
+      color: var(--accent);
+    }
+
+    .pipeline {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pipeline span {
+      background: #f3f5f7;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .summary-panel {
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fafaf9;
+      display: none;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .summary-panel.active {
+      display: block;
+    }
+
+    .summary-panel h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-family: "Zilla Slab", "Noto Sans SC", serif;
+    }
+
+    .summary-panel p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .cards {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 260px;
+      animation: fadeUp 0.5s ease;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .lang-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(11, 79, 108, 0.08);
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .comment {
+      border-top: 1px dashed var(--line);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .comment:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .comment .original {
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .comment .translated {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f3f4f6, #e9edf1, #f3f4f6);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+      border-radius: 12px;
+      height: 14px;
+    }
+
+    .skeleton-block {
+      height: 160px;
+    }
+
+    .news-summary {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .news-summary strong {
+      color: var(--ink);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+    }
+
+    .error-box {
+      background: rgba(245, 84, 84, 0.08);
+      color: #b12323;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .search-box {
+        grid-template-columns: 1fr;
+        border-radius: 20px;
+        padding: 12px;
+      }
+
+      .search-box button {
+        width: 100%;
+      }
+
+      .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .module {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <section class="home" id="home">
+      <div class="brand">
+        <span class="dot"></span>
+        Global Perspective Engine
+      </div>
+      <h1>一个输入，自动对比全球叙事。</h1>
+      <p>
+        输入事件关键词，系统并行抓取多语言 YouTube 评论与新闻报道，自动翻译成中文并生成总结，帮助普通用户快速理解世界各地对同一事件的看法。
+      </p>
+      <div class="search-box">
+        <input id="searchInput" type="text" placeholder="例如：红海航运危机" value="红海航运危机" />
+        <button id="searchBtn">开始对比</button>
+      </div>
+      <div class="assist">
+        <span>多语言覆盖</span>
+        中文 · 英文 · 日文 · 德语 · 法语 · 西班牙语 · 葡萄牙语
+      </div>
+    </section>
+
+    <section class="results" id="results">
+      <div class="results-header">
+        <div class="query-card">事件关键词：<span id="queryText">-</span></div>
+        <button class="ghost-btn" id="resetBtn">重新搜索</button>
+      </div>
+
+      <div class="module" id="videoModule">
+        <div class="module-header">
+          <div class="module-title">
+            <h2>多语言视频评论分析</h2>
+            <span class="status-pill" id="videoStatus">等待检索</span>
+          </div>
+          <p>系统自动从 YouTube 各语言环境中选择首条视频，抓取前五条评论并翻译成中文。</p>
+          <div class="module-actions">
+            <button class="ai-btn" id="videoSummaryBtn" data-module="video" disabled>AI 总结</button>
+            <div class="pipeline">
+              <span>多语言检索</span>
+              <span>首条视频</span>
+              <span>评论抓取</span>
+              <span>中文翻译</span>
+            </div>
+          </div>
+        </div>
+        <div class="summary-panel" id="videoSummary"></div>
+        <div class="cards" id="videoCards"></div>
+      </div>
+
+      <div class="module" id="newsModule">
+        <div class="module-header">
+          <div class="module-title">
+            <h2>多语言新闻报道分析</h2>
+            <span class="status-pill" id="newsStatus">等待检索</span>
+          </div>
+          <p>系统自动从 Google 搜索中筛选可免费阅读的新闻页面，提取正文后生成中等长度摘要与中文翻译。</p>
+          <div class="module-actions">
+            <button class="ai-btn" id="newsSummaryBtn" data-module="news" disabled>AI 总结</button>
+            <div class="pipeline">
+              <span>多语言检索</span>
+              <span>广告/付费过滤</span>
+              <span>正文抓取</span>
+              <span>摘要生成</span>
+            </div>
+          </div>
+        </div>
+        <div class="summary-panel" id="newsSummary"></div>
+        <div class="cards" id="newsCards"></div>
+      </div>
+
+      <div class="footnote">所有结果均为自动化流程展示，可扩展至更多语言与平台。</div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      query: "",
+      videoItems: [],
+      newsItems: [],
+    };
+
+    const homeEl = document.getElementById("home");
+    const resultsEl = document.getElementById("results");
+    const queryTextEl = document.getElementById("queryText");
+    const searchInput = document.getElementById("searchInput");
+    const videoStatusEl = document.getElementById("videoStatus");
+    const newsStatusEl = document.getElementById("newsStatus");
+    const videoCardsEl = document.getElementById("videoCards");
+    const newsCardsEl = document.getElementById("newsCards");
+    const videoSummaryBtn = document.getElementById("videoSummaryBtn");
+    const newsSummaryBtn = document.getElementById("newsSummaryBtn");
+    const videoSummaryEl = document.getElementById("videoSummary");
+    const newsSummaryEl = document.getElementById("newsSummary");
+
+    function renderSkeletonCards(targetEl) {
+      targetEl.innerHTML = Array.from({ length: 7 })
+        .map(
+          () => `
+          <div class="card">
+            <div class="skeleton" style="width: 60%;"></div>
+            <div class="skeleton" style="width: 90%;"></div>
+            <div class="skeleton" style="width: 72%;"></div>
+            <div class="skeleton" style="width: 88%;"></div>
+            <div class="skeleton skeleton-block"></div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function setStatus(el, text, ready) {
+      el.textContent = text;
+      el.classList.toggle("ready", !!ready);
+    }
+
+    function renderVideoCards(items) {
+      videoCardsEl.innerHTML = items
+        .map((item) => {
+          if (item.error) {
+            return `
+              <div class="card">
+                <div class="card-header">
+                  <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+                  <span class="badge">YouTube</span>
+                </div>
+                <div class="error-box">${item.error}</div>
+              </div>
+            `;
+          }
+          return `
+            <div class="card">
+              <div class="card-header">
+                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+                <span class="badge">YouTube</span>
+              </div>
+              <div class="meta">代表视频：${item.video?.title || "-"}</div>
+              <div class="meta">频道：${item.video?.channel || "-"}</div>
+              <div class="divider"></div>
+              ${(item.comments || [])
+                .map(
+                  (comment) => `
+                  <div class="comment">
+                    <div class="original">${comment.original}</div>
+                    <div class="translated">${comment.translated}</div>
+                  </div>
+                `
+                )
+                .join("")}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderNewsCards(items) {
+      newsCardsEl.innerHTML = items
+        .map((item) => {
+          if (item.error) {
+            return `
+              <div class="card">
+                <div class="card-header">
+                  <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+                  <span class="badge">News</span>
+                </div>
+                <div class="error-box">${item.error}</div>
+              </div>
+            `;
+          }
+          return `
+            <div class="card">
+              <div class="card-header">
+                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+                <span class="badge">News</span>
+              </div>
+              <div class="meta">来源：${item.article?.source || "-"}</div>
+              <div class="meta">标题：${item.article?.title || "-"}</div>
+              <div class="divider"></div>
+              <div class="news-summary"><strong>摘要：</strong>${item.summary || ""}</div>
+              <div class="news-summary"><strong>中文译文：</strong>${item.summaryZh || ""}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function showSummary(panel, title, content) {
+      panel.innerHTML = `
+        <h3>${title}</h3>
+        ${content
+          .split("\n")
+          .filter((line) => line.trim())
+          .map((line) => `<p>${line}</p>`)
+          .join("")}
+      `;
+      panel.classList.add("active");
+    }
+
+    async function startSearch() {
+      const query = searchInput.value.trim();
+      if (!query) {
+        searchInput.focus();
+        return;
+      }
+
+      state.query = query;
+      state.videoItems = [];
+      state.newsItems = [];
+
+      queryTextEl.textContent = query;
+      homeEl.style.display = "none";
+      resultsEl.classList.add("active");
+
+      renderSkeletonCards(videoCardsEl);
+      renderSkeletonCards(newsCardsEl);
+
+      setStatus(videoStatusEl, "正在抓取评论", false);
+      setStatus(newsStatusEl, "正在抓取新闻", false);
+      videoSummaryBtn.disabled = true;
+      newsSummaryBtn.disabled = true;
+      videoSummaryEl.classList.remove("active");
+      newsSummaryEl.classList.remove("active");
+
+      fetchModule("/api/video", query, (items) => {
+        state.videoItems = items;
+        renderVideoCards(items);
+        setStatus(videoStatusEl, "评论已就绪", true);
+        videoSummaryBtn.disabled = false;
+      }, () => {
+        setStatus(videoStatusEl, "抓取失败", false);
+      });
+
+      fetchModule("/api/news", query, (items) => {
+        state.newsItems = items;
+        renderNewsCards(items);
+        setStatus(newsStatusEl, "新闻已就绪", true);
+        newsSummaryBtn.disabled = false;
+      }, () => {
+        setStatus(newsStatusEl, "抓取失败", false);
+      });
+    }
+
+    async function fetchModule(endpoint, query, onSuccess, onError) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+        const data = await response.json();
+        onSuccess(data.items || []);
+      } catch (error) {
+        onError(error);
+      }
+    }
+
+    async function handleSummary(type) {
+      if (type === "video" && !state.videoItems.length) {
+        return;
+      }
+      if (type === "news" && !state.newsItems.length) {
+        return;
+      }
+
+      const panel = type === "video" ? videoSummaryEl : newsSummaryEl;
+      panel.classList.add("active");
+      panel.innerHTML = "<p>AI 正在生成总结...</p>";
+
+      const endpoint = type === "video" ? "/api/summary/comments" : "/api/summary/news";
+      const items = type === "video" ? state.videoItems : state.newsItems;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: state.query, items }),
+        });
+        if (!response.ok) {
+          throw new Error("Summary failed");
+        }
+        const data = await response.json();
+        showSummary(panel, "AI 总结", data.summary || "暂无结果");
+      } catch (error) {
+        panel.innerHTML = "<p>AI 总结生成失败，请稍后重试。</p>";
+      }
+    }
+
+    function resetSearch() {
+      resultsEl.classList.remove("active");
+      homeEl.style.display = "flex";
+      searchInput.focus();
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", startSearch);
+    document.getElementById("resetBtn").addEventListener("click", resetSearch);
+    videoSummaryBtn.addEventListener("click", () => handleSummary("video"));
+    newsSummaryBtn.addEventListener("click", () => handleSummary("news"));
+
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        startSearch();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -35,14 +35,16 @@ class Settings:
     mymemory_email: str = os.getenv("MYMEMORY_EMAIL", "")
 
     invidious_base_url: str = os.getenv("INVIDIOUS_BASE_URL", "https://yewtu.be")
-    invidious_instances: list[str] = [
-        url.strip()
-        for url in os.getenv(
-            "INVIDIOUS_INSTANCES",
-            "https://yewtu.be,https://vid.puffyan.us,https://inv.nadeko.net,https://invidious.fdn.fr",
-        ).split(",")
-        if url.strip()
-    ]
+    invidious_instances: list[str] = field(
+        default_factory=lambda: [
+            url.strip()
+            for url in os.getenv(
+                "INVIDIOUS_INSTANCES",
+                "https://yewtu.be,https://vid.puffyan.us,https://inv.nadeko.net,https://invidious.fdn.fr",
+            ).split(",")
+            if url.strip()
+        ]
+    )
 
     gdelt_timespan: str = os.getenv("GDELT_TIMESPAN", "7d")
 

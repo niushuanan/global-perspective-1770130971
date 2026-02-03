@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-
 from app.core.config import settings
 
 
@@ -89,6 +87,7 @@ async def _search_invidious(client, query: str) -> dict | None:
 
 
 async def _fetch_comments_invidious(client, video_id: str) -> list[dict]:
+    from bs4 import BeautifulSoup
     response = await client.get(
         f"{settings.invidious_base_url.rstrip('/')}/api/v1/comments/{video_id}",
         params={"sort_by": "top"},

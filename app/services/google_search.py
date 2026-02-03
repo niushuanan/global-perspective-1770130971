@@ -1,7 +1,5 @@
 import urllib.parse
 
-import feedparser
-
 from app.core.config import settings
 
 
@@ -40,6 +38,7 @@ async def _search_cse(client, query: str, lang) -> list[dict]:
 
 
 async def _search_google_news_rss(client, query: str, lang) -> list[dict]:
+    import feedparser
     encoded = urllib.parse.quote(query)
     url = (
         f"https://news.google.com/rss/search?q={encoded}"

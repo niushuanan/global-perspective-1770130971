@@ -1,9 +1,6 @@
 import re
 from urllib.parse import urlparse
 
-from bs4 import BeautifulSoup
-import trafilatura
-
 
 PAYWALL_KEYWORDS = [
     "subscribe",
@@ -21,6 +18,7 @@ PAYWALL_KEYWORDS = [
 
 
 async def extract_article(client, url: str) -> dict | None:
+    import trafilatura
     response = await client.get(url)
     if response.status_code >= 400:
         return None
@@ -54,6 +52,7 @@ def _looks_like_paywall(html: str, text: str) -> bool:
 
 
 def _fallback_extract(html: str) -> str:
+    from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "noscript", "header", "footer", "nav", "form", "aside"]):
         tag.decompose()
@@ -69,6 +68,7 @@ def _fallback_extract(html: str) -> str:
 
 
 def _extract_title(html: str) -> str:
+    from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, "html.parser")
     if soup.title and soup.title.string:
         return soup.title.string.strip()

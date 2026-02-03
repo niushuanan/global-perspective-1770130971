@@ -123,7 +123,8 @@ async def summarize_news(request: SummaryRequest):
 
 async def fetch_video_for_lang(client, lang, query: str) -> dict[str, Any]:
     try:
-        video = await search_video(client, query, lang)
+        localized_query = await translate_text(client, query, "auto", lang.mymemory_lang)
+        video = await search_video(client, localized_query or query, lang)
         if not video:
             return {
                 "key": lang.key,
@@ -175,7 +176,8 @@ async def _translate_comments(client, comments: list[dict], lang) -> list[dict]:
 
 async def fetch_news_for_lang(client, lang, query: str) -> dict[str, Any]:
     try:
-        results = await search_news(client, query, lang)
+        localized_query = await translate_text(client, query, "auto", lang.mymemory_lang)
+        results = await search_news(client, localized_query or query, lang)
         if not results:
             return {
                 "key": lang.key,

@@ -6,14 +6,27 @@ class TranslateError(RuntimeError):
     pass
 
 
+def _looks_cjk(text: str) -> bool:
+    for char in text:
+        if "\u4e00" <= char <= "\u9fff" or "\u3040" <= char <= "\u30ff":
+            return True
+    return False
+
+
 async def translate_text(client, text: str, source_lang: str, target_lang: str = "zh-CN") -> str:
     if not text:
         return ""
     if source_lang.lower().startswith("zh") and target_lang.lower().startswith("zh"):
         return text
+    if source_lang == "auto" and target_lang.lower().startswith("zh") and _looks_cjk(text):
+        return text
 
     provider = settings.translate_provider.lower()
     if provider == "mymemory":
+        if source_lang == "auto":
+            if settings.deepseek_api_key:
+                return await _translate_deepseek(client, text, source_lang, target_lang)
+            return text
         try:
             return await _translate_mymemory(client, text, source_lang, target_lang)
         except Exception:

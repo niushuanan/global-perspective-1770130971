@@ -13,4 +13,6 @@ services:
       - key: DEEPSEEK_MODEL
         value: deepseek-chat
       - key: TRANSLATE_PROVIDER
-        value: mymemory
+        value: deepseek
+      - key: YOUTUBE_API_KEY
+        sync: false

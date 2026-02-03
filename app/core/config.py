@@ -31,7 +31,10 @@ class Settings:
     google_cse_api_key: str = os.getenv("GOOGLE_CSE_API_KEY", "")
     google_cse_id: str = os.getenv("GOOGLE_CSE_ID", "")
 
-    translate_provider: str = os.getenv("TRANSLATE_PROVIDER", "mymemory")
+    translate_provider: str = os.getenv(
+        "TRANSLATE_PROVIDER",
+        "deepseek" if os.getenv("DEEPSEEK_API_KEY") else "mymemory",
+    )
     mymemory_email: str = os.getenv("MYMEMORY_EMAIL", "")
 
     invidious_base_url: str = os.getenv("INVIDIOUS_BASE_URL", "https://yewtu.be")

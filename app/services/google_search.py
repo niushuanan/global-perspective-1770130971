@@ -1,13 +1,15 @@
 import urllib.parse
+from urllib.parse import urlparse, urlunparse
 
 from app.core.config import settings
 
 
 async def search_news(client, query: str, lang) -> list[dict]:
-    results = await _search_gdelt(client, query, lang)
-    if results:
-        return results
-    return await _search_google_news_rss(client, query, lang)
+    results: list[dict] = []
+    results.extend(await _search_gdelt(client, query, lang))
+    results.extend(await _search_google_news_rss(client, query, lang))
+    results.extend(await _search_bing_news_rss(client, query, lang))
+    return _dedupe_results(results)
 
 
 async def _search_gdelt(client, query: str, lang) -> list[dict]:
@@ -52,6 +54,7 @@ def _gdelt_article_to_result(item: dict) -> dict:
         "source": item.get("domain", ""),
         "language": item.get("language", ""),
         "seendate": item.get("seendate", ""),
+        "summary": "",
     }
 
 
@@ -81,5 +84,58 @@ async def _search_google_news_rss(client, query: str, lang) -> list[dict]:
         if not link:
             continue
         source = entry.get("source", {}).get("title", "") if isinstance(entry.get("source"), dict) else ""
-        results.append({"title": entry.get("title", ""), "link": link, "source": source})
+        summary = entry.get("summary", "") or entry.get("description", "")
+        results.append(
+            {
+                "title": entry.get("title", ""),
+                "link": link,
+                "source": source,
+                "summary": summary,
+            }
+        )
     return results
+
+
+async def _search_bing_news_rss(client, query: str, lang) -> list[dict]:
+    import feedparser
+    encoded = urllib.parse.quote(query)
+    url = f"https://www.bing.com/news/search?q={encoded}&format=rss&setlang={lang.google_hl}"
+    response = await client.get(url)
+    if response.status_code >= 400:
+        return []
+    feed = feedparser.parse(response.text)
+    results = []
+    for entry in feed.entries[:8]:
+        link = entry.get("link", "")
+        if not link:
+            continue
+        source = entry.get("source", {}).get("title", "") if isinstance(entry.get("source"), dict) else ""
+        summary = entry.get("summary", "") or entry.get("description", "")
+        results.append(
+            {"title": entry.get("title", ""), "link": link, "source": source, "summary": summary}
+        )
+    return results
+
+
+def _dedupe_results(results: list[dict]) -> list[dict]:
+    seen = set()
+    deduped = []
+    for item in results:
+        link = item.get("link", "")
+        key = _normalize_link(link) or item.get("title", "")
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
+def _normalize_link(url: str) -> str:
+    if not url:
+        return ""
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return url
+    cleaned = parsed._replace(query="", fragment="")
+    return urlunparse(cleaned)

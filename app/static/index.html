@@ -7,19 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Zilla+Slab:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
     :root {
-      --ink: #10131a;
-      --muted: #5b6270;
-      --paper: #f6f4ef;
-      --paper-strong: #ffffff;
-      --line: #e3e2dd;
-      --accent: #0b4f6c;
-      --accent-2: #f2a04a;
-      --shadow: 0 16px 36px rgba(12, 22, 35, 0.08);
+      --ink: #0b0b0c;
+      --muted: #57585c;
+      --paper: #f6f6f4;
+      --panel: #ffffff;
+      --line: #d8d8d6;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
       --radius: 18px;
     }
 
@@ -30,11 +28,10 @@
     }
 
     body {
-      font-family: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
+      font-family: "Source Serif 4", "Noto Serif SC", "Songti SC", serif;
       color: var(--ink);
-      background: radial-gradient(circle at top left, #eef2f5 0%, transparent 45%),
-        radial-gradient(circle at 80% 20%, #fff2df 0%, transparent 40%),
-        var(--paper);
+      background: radial-gradient(circle at top right, rgba(0, 0, 0, 0.06), transparent 45%),
+        linear-gradient(180deg, #f8f8f6 0%, #f2f2ee 100%);
       min-height: 100vh;
     }
 
@@ -42,64 +39,50 @@
       content: "";
       position: fixed;
       inset: 0;
-      background-image: linear-gradient(transparent 23px, rgba(16, 19, 26, 0.04) 24px),
-        linear-gradient(90deg, transparent 23px, rgba(16, 19, 26, 0.04) 24px);
-      background-size: 24px 24px;
       pointer-events: none;
-      opacity: 0.35;
+      background-image: linear-gradient(transparent 23px, rgba(0, 0, 0, 0.04) 24px),
+        linear-gradient(90deg, transparent 23px, rgba(0, 0, 0, 0.04) 24px);
+      background-size: 24px 24px;
+      opacity: 0.25;
       z-index: 0;
     }
 
     #app {
       position: relative;
       z-index: 1;
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 64px 24px 96px;
+      padding: 72px 24px 96px;
       display: flex;
       flex-direction: column;
       gap: 48px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
       text-transform: uppercase;
+      letter-spacing: 0.4em;
       font-size: 12px;
       color: var(--muted);
     }
 
-    .brand .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 0 0 6px rgba(11, 79, 108, 0.1);
+    .hero {
+      display: grid;
+      gap: 28px;
+      animation: fadeIn 0.7s ease;
     }
 
-    .home {
-      min-height: 70vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 32px;
-      animation: fadeUp 0.8s ease;
-    }
-
-    .home h1 {
-      font-family: "Zilla Slab", "Noto Sans SC", serif;
-      font-size: clamp(32px, 5vw, 52px);
-      line-height: 1.1;
+    .hero h1 {
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.05;
       letter-spacing: -0.02em;
     }
 
-    .home p {
+    .hero p {
       max-width: 640px;
-      font-size: 16px;
       color: var(--muted);
+      font-size: 16px;
       line-height: 1.7;
     }
 
@@ -107,7 +90,7 @@
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 12px;
-      background: var(--paper-strong);
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 8px;
@@ -122,18 +105,20 @@
       font-size: 16px;
       font-weight: 600;
       color: var(--ink);
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
     .search-box button {
       border: none;
-      background: var(--accent);
+      background: #0b0b0c;
       color: #fff;
       font-weight: 700;
-      padding: 12px 24px;
+      padding: 12px 26px;
       border-radius: 999px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 12px 22px rgba(11, 79, 108, 0.2);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
     .search-box button:hover {
@@ -141,27 +126,25 @@
     }
 
     .assist {
-      font-size: 13px;
-      color: var(--muted);
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .assist span {
-      background: rgba(11, 79, 108, 0.08);
-      color: var(--accent);
-      padding: 6px 10px;
+      border: 1px solid var(--line);
+      padding: 6px 12px;
       border-radius: 999px;
-      font-weight: 600;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
     .results {
       display: none;
       flex-direction: column;
-      gap: 32px;
-      animation: fadeUp 0.6s ease;
+      gap: 36px;
+      animation: fadeIn 0.6s ease;
     }
 
     .results.active {
@@ -177,12 +160,13 @@
     }
 
     .query-card {
-      background: var(--paper-strong);
+      background: var(--panel);
       border: 1px solid var(--line);
-      padding: 16px 20px;
-      border-radius: 14px;
+      padding: 14px 20px;
+      border-radius: 12px;
       font-weight: 600;
       box-shadow: var(--shadow);
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
     .ghost-btn {
@@ -193,16 +177,17 @@
       font-weight: 600;
       cursor: pointer;
       color: var(--muted);
-      transition: border 0.2s ease, color 0.2s ease;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      transition: all 0.2s ease;
     }
 
     .ghost-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      border-color: var(--ink);
+      color: var(--ink);
     }
 
     .module {
-      background: var(--paper-strong);
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 28px;
@@ -212,27 +197,22 @@
       gap: 20px;
     }
 
-    .module-header {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
     .module-title {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 12px;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
     .module-title h2 {
-      font-family: "Zilla Slab", "Noto Sans SC", serif;
-      font-size: 28px;
+      font-size: 26px;
     }
 
-    .module-title p {
+    .module-header p {
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.6;
     }
 
     .module-actions {
@@ -242,21 +222,20 @@
       align-items: center;
     }
 
-    .ai-btn {
+    .primary-btn {
       border: none;
-      background: var(--accent);
+      background: #0b0b0c;
       color: #fff;
       font-weight: 700;
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
-    .ai-btn:disabled {
+    .primary-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      box-shadow: none;
     }
 
     .status-pill {
@@ -264,13 +243,13 @@
       font-weight: 700;
       padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(242, 160, 74, 0.18);
-      color: #a55a0e;
+      border: 1px solid var(--line);
+      color: var(--muted);
     }
 
     .status-pill.ready {
-      background: rgba(11, 79, 108, 0.14);
-      color: var(--accent);
+      border-color: #0b0b0c;
+      color: #0b0b0c;
     }
 
     .pipeline {
@@ -282,18 +261,17 @@
     }
 
     .pipeline span {
-      background: #f3f5f7;
+      border: 1px solid var(--line);
       padding: 4px 8px;
       border-radius: 999px;
     }
 
     .summary-panel {
-      border: 1px dashed var(--line);
+      border: 1px solid var(--line);
       border-radius: 16px;
       padding: 18px;
-      background: #fafaf9;
+      background: #fdfdfc;
       display: none;
-      animation: fadeUp 0.4s ease;
     }
 
     .summary-panel.active {
@@ -301,40 +279,38 @@
     }
 
     .summary-panel h3 {
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
       font-size: 18px;
       margin-bottom: 8px;
-      font-family: "Zilla Slab", "Noto Sans SC", serif;
     }
 
     .summary-panel p {
       font-size: 14px;
       color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 6px;
+      line-height: 1.7;
+      margin-bottom: 8px;
     }
 
-    .cards {
-      display: grid;
+    .language-stack {
+      display: flex;
+      flex-direction: column;
       gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 
-    .card {
+    .lang-card {
       border: 1px solid var(--line);
       border-radius: 16px;
-      padding: 16px;
+      padding: 18px;
       background: #fff;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      min-height: 260px;
-      animation: fadeUp 0.5s ease;
+      gap: 16px;
     }
 
-    .card-header {
+    .lang-head {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       gap: 12px;
     }
 
@@ -343,64 +319,97 @@
       align-items: center;
       gap: 8px;
       font-weight: 700;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
-    .badge {
+    .tag {
       font-size: 11px;
       font-weight: 700;
-      color: var(--accent);
-      background: rgba(11, 79, 108, 0.08);
+      border: 1px solid var(--line);
       padding: 4px 8px;
       border-radius: 999px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
-    .meta {
+    .video-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .video-block {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .video-meta {
       font-size: 12px;
       color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .comment {
       border-top: 1px dashed var(--line);
       padding-top: 10px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 6px;
     }
 
-    .comment:first-of-type {
+    .comment:first-child {
       border-top: none;
       padding-top: 0;
     }
 
     .comment .original {
       font-size: 13px;
-      line-height: 1.5;
       font-weight: 600;
-      color: var(--ink);
+      line-height: 1.6;
     }
 
     .comment .translated {
       font-size: 12px;
-      line-height: 1.6;
       color: var(--muted);
+      line-height: 1.6;
     }
 
-    .skeleton {
-      background: linear-gradient(90deg, #f3f4f6, #e9edf1, #f3f4f6);
-      background-size: 200% 100%;
-      animation: shimmer 1.6s infinite;
-      border-radius: 12px;
-      height: 14px;
+    .comment .likes {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
-    .skeleton-block {
-      height: 160px;
+    .news-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .news-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .news-summary {
       font-size: 13px;
-      line-height: 1.6;
       color: var(--muted);
+      line-height: 1.6;
     }
 
     .news-summary strong {
@@ -413,11 +422,24 @@
     }
 
     .error-box {
-      background: rgba(245, 84, 84, 0.08);
-      color: #b12323;
+      background: rgba(0, 0, 0, 0.04);
+      color: #8a2d2d;
+      border: 1px solid rgba(0, 0, 0, 0.08);
       padding: 12px;
       border-radius: 12px;
       font-size: 13px;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f2f2f2, #e5e5e5, #f2f2f2);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+      border-radius: 8px;
+      height: 12px;
+    }
+
+    .skeleton-block {
+      height: 140px;
     }
 
     .footnote {
@@ -436,10 +458,10 @@
       }
     }
 
-    @keyframes fadeUp {
+    @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(8px);
       }
       to {
         opacity: 1;
@@ -458,35 +480,38 @@
         width: 100%;
       }
 
+      .module {
+        padding: 20px;
+      }
+
       .results-header {
         flex-direction: column;
         align-items: flex-start;
-      }
-
-      .module {
-        padding: 20px;
       }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <section class="home" id="home">
-      <div class="brand">
-        <span class="dot"></span>
-        Global Perspective Engine
-      </div>
-      <h1>一个输入，自动对比全球叙事。</h1>
+    <section class="hero" id="home">
+      <div class="brand">Global Perspective Engine</div>
+      <h1>单一输入，全球叙事对照。</h1>
       <p>
-        输入事件关键词，系统并行抓取多语言 YouTube 评论与新闻报道，自动翻译成中文并生成总结，帮助普通用户快速理解世界各地对同一事件的看法。
+        输入事件关键词，系统并行抓取多语言 YouTube 评论与新闻报道，自动翻译成中文并生成总结。
+        一次输入，获得多国观点的清晰对比。
       </p>
       <div class="search-box">
         <input id="searchInput" type="text" placeholder="例如：红海航运危机" value="红海航运危机" />
         <button id="searchBtn">开始对比</button>
       </div>
       <div class="assist">
-        <span>多语言覆盖</span>
-        中文 · 英文 · 日文 · 德语 · 法语 · 西班牙语 · 葡萄牙语
+        <span>中文</span>
+        <span>English</span>
+        <span>日本語</span>
+        <span>Deutsch</span>
+        <span>Français</span>
+        <span>Español</span>
+        <span>Português</span>
       </div>
     </section>
 
@@ -502,19 +527,19 @@
             <h2>多语言视频评论分析</h2>
             <span class="status-pill" id="videoStatus">等待检索</span>
           </div>
-          <p>系统自动从 YouTube 各语言环境中选择首条视频，抓取前五条评论并翻译成中文。</p>
+          <p>每种语言选取播放量高、最新、相关度高的前 2 个视频，抓取点赞最多的 20 条评论并翻译成中文。</p>
           <div class="module-actions">
-            <button class="ai-btn" id="videoSummaryBtn" data-module="video" disabled>AI 总结</button>
+            <button class="primary-btn" id="videoSummaryBtn" data-module="video" disabled>重新生成总结</button>
             <div class="pipeline">
               <span>多语言检索</span>
-              <span>首条视频</span>
-              <span>评论抓取</span>
+              <span>双视频择优</span>
+              <span>高赞评论</span>
               <span>中文翻译</span>
             </div>
           </div>
         </div>
         <div class="summary-panel" id="videoSummary"></div>
-        <div class="cards" id="videoCards"></div>
+        <div class="language-stack" id="videoCards"></div>
       </div>
 
       <div class="module" id="newsModule">
@@ -523,22 +548,22 @@
             <h2>多语言新闻报道分析</h2>
             <span class="status-pill" id="newsStatus">等待检索</span>
           </div>
-          <p>系统自动从 Google 搜索中筛选可免费阅读的新闻页面，提取正文后生成中等长度摘要与中文翻译。</p>
+          <p>从多来源新闻聚合中筛选可访问报道，提取正文生成中等长度摘要，并提供中文翻译。</p>
           <div class="module-actions">
-            <button class="ai-btn" id="newsSummaryBtn" data-module="news" disabled>AI 总结</button>
+            <button class="primary-btn" id="newsSummaryBtn" data-module="news" disabled>重新生成总结</button>
             <div class="pipeline">
-              <span>多语言检索</span>
-              <span>广告/付费过滤</span>
-              <span>正文抓取</span>
+              <span>多源检索</span>
+              <span>付费过滤</span>
+              <span>正文抽取</span>
               <span>摘要生成</span>
             </div>
           </div>
         </div>
         <div class="summary-panel" id="newsSummary"></div>
-        <div class="cards" id="newsCards"></div>
+        <div class="news-grid" id="newsCards"></div>
       </div>
 
-      <div class="footnote">所有结果均为自动化流程展示，可扩展至更多语言与平台。</div>
+      <div class="footnote">自动化流程可扩展更多语言与平台，适用于商业级全球舆情观察。</div>
     </section>
   </div>
 
@@ -562,15 +587,29 @@
     const videoSummaryEl = document.getElementById("videoSummary");
     const newsSummaryEl = document.getElementById("newsSummary");
 
-    function renderSkeletonCards(targetEl) {
-      targetEl.innerHTML = Array.from({ length: 7 })
+    function renderSkeleton(targetEl, count) {
+      targetEl.innerHTML = Array.from({ length: count })
         .map(
           () => `
-          <div class="card">
+          <div class="lang-card">
+            <div class="skeleton" style="width: 120px;"></div>
+            <div class="skeleton" style="width: 80%;"></div>
             <div class="skeleton" style="width: 60%;"></div>
-            <div class="skeleton" style="width: 90%;"></div>
-            <div class="skeleton" style="width: 72%;"></div>
-            <div class="skeleton" style="width: 88%;"></div>
+            <div class="skeleton skeleton-block"></div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function renderNewsSkeleton(targetEl, count) {
+      targetEl.innerHTML = Array.from({ length: count })
+        .map(
+          () => `
+          <div class="news-card">
+            <div class="skeleton" style="width: 90px;"></div>
+            <div class="skeleton" style="width: 70%;"></div>
+            <div class="skeleton" style="width: 85%;"></div>
             <div class="skeleton skeleton-block"></div>
           </div>
         `
@@ -583,40 +622,76 @@
       el.classList.toggle("ready", !!ready);
     }
 
+    function formatCount(value) {
+      const num = Number(value || 0);
+      if (num >= 1_000_000) {
+        return (num / 1_000_000).toFixed(1) + "M";
+      }
+      if (num >= 1_000) {
+        return (num / 1_000).toFixed(1) + "K";
+      }
+      return String(num);
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      try {
+        return new Date(value).toISOString().slice(0, 10);
+      } catch (error) {
+        return "-";
+      }
+    }
+
     function renderVideoCards(items) {
       videoCardsEl.innerHTML = items
         .map((item) => {
           if (item.error) {
             const message = formatVideoError(item.error);
             return `
-              <div class="card">
-                <div class="card-header">
+              <div class="lang-card">
+                <div class="lang-head">
                   <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                  <span class="badge">YouTube</span>
+                  <span class="tag">YouTube</span>
                 </div>
                 <div class="error-box">${message}</div>
               </div>
             `;
           }
-          return `
-            <div class="card">
-              <div class="card-header">
-                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                <span class="badge">YouTube</span>
-              </div>
-              <div class="meta">代表视频：${item.video?.title || "-"}</div>
-              <div class="meta">频道：${item.video?.channel || "-"}</div>
-              <div class="divider"></div>
-              ${(item.comments || [])
-                .map(
-                  (comment) => `
-                  <div class="comment">
-                    <div class="original">${comment.original}</div>
-                    <div class="translated">${comment.translated}</div>
+
+          const videos = item.videos || [];
+          const videoBlocks = videos
+            .map((video, index) => {
+              const comments = video.comments || [];
+              return `
+                <div class="video-block">
+                  <div class="video-meta">视频 ${index + 1} · ${video.title || "-"}</div>
+                  <div class="video-meta">频道：${video.channel || "-"}</div>
+                  <div class="video-meta">播放量：${formatCount(video.viewCount)} · 发布时间：${formatDate(video.publishedAt)}</div>
+                  <div class="comment-list">
+                    ${comments
+                      .map(
+                        (comment) => `
+                        <div class="comment">
+                          <div class="original">${comment.original || ""}</div>
+                          <div class="translated">${comment.translated || ""}</div>
+                          <div class="likes">👍 ${formatCount(comment.likeCount)}</div>
+                        </div>
+                      `
+                      )
+                      .join("")}
                   </div>
-                `
-                )
-                .join("")}
+                </div>
+              `;
+            })
+            .join("");
+
+          return `
+            <div class="lang-card">
+              <div class="lang-head">
+                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+                <span class="tag">YouTube</span>
+              </div>
+              <div class="video-grid">${videoBlocks}</div>
             </div>
           `;
         })
@@ -629,23 +704,23 @@
           if (item.error) {
             const message = formatNewsError(item.error);
             return `
-              <div class="card">
-                <div class="card-header">
+              <div class="news-card">
+                <div class="lang-head">
                   <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                  <span class="badge">News</span>
+                  <span class="tag">News</span>
                 </div>
                 <div class="error-box">${message}</div>
               </div>
             `;
           }
           return `
-            <div class="card">
-              <div class="card-header">
+            <div class="news-card">
+              <div class="lang-head">
                 <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                <span class="badge">News</span>
+                <span class="tag">News</span>
               </div>
-              <div class="meta">来源：${item.article?.source || "-"}</div>
-              <div class="meta">标题：${item.article?.title || "-"}</div>
+              <div class="video-meta">来源：${item.article?.source || "-"}</div>
+              <div class="video-meta">标题：${item.article?.title || "-"}</div>
               <div class="divider"></div>
               <div class="news-summary"><strong>摘要：</strong>${item.summary || ""}</div>
               <div class="news-summary"><strong>中文译文：</strong>${item.summaryZh || ""}</div>
@@ -682,8 +757,8 @@
       homeEl.style.display = "none";
       resultsEl.classList.add("active");
 
-      renderSkeletonCards(videoCardsEl);
-      renderSkeletonCards(newsCardsEl);
+      renderSkeleton(videoCardsEl, 7);
+      renderNewsSkeleton(newsCardsEl, 7);
 
       setStatus(videoStatusEl, "正在抓取评论", false);
       setStatus(newsStatusEl, "正在抓取新闻", false);
@@ -691,21 +766,29 @@
       newsSummaryBtn.disabled = true;
       videoSummaryEl.classList.remove("active");
       newsSummaryEl.classList.remove("active");
+      videoSummaryEl.innerHTML = "";
+      newsSummaryEl.innerHTML = "";
 
-      fetchModule("/api/video", query, (items) => {
+      fetchModule("/api/video", query, (items, summary) => {
         state.videoItems = items;
         renderVideoCards(items);
         setStatus(videoStatusEl, "评论已就绪", true);
         videoSummaryBtn.disabled = false;
+        if (summary) {
+          showSummary(videoSummaryEl, "AI 总结", summary);
+        }
       }, () => {
         setStatus(videoStatusEl, "抓取失败", false);
       });
 
-      fetchModule("/api/news", query, (items) => {
+      fetchModule("/api/news", query, (items, summary) => {
         state.newsItems = items;
         renderNewsCards(items);
         setStatus(newsStatusEl, "新闻已就绪", true);
         newsSummaryBtn.disabled = false;
+        if (summary) {
+          showSummary(newsSummaryEl, "AI 总结", summary);
+        }
       }, () => {
         setStatus(newsStatusEl, "抓取失败", false);
       });
@@ -722,7 +805,7 @@
           throw new Error("Request failed");
         }
         const data = await response.json();
-        onSuccess(data.items || []);
+        onSuccess(data.items || [], data.summary || "");
       } catch (error) {
         onError(error);
       }
@@ -736,27 +819,9 @@
         return;
       }
 
-      if (type === "video") {
-        const hasComments = state.videoItems.some((item) => (item.comments || []).length > 0);
-        if (!hasComments) {
-          videoSummaryEl.classList.add("active");
-          videoSummaryEl.innerHTML = "<p>暂无可用评论可总结，请稍后重试。</p>";
-          return;
-        }
-      }
-
-      if (type === "news") {
-        const hasSummaries = state.newsItems.some((item) => item.summary);
-        if (!hasSummaries) {
-          newsSummaryEl.classList.add("active");
-          newsSummaryEl.innerHTML = "<p>暂无可用新闻摘要可总结，请稍后重试。</p>";
-          return;
-        }
-      }
-
       const panel = type === "video" ? videoSummaryEl : newsSummaryEl;
       panel.classList.add("active");
-      panel.innerHTML = "<p>AI 正在生成总结...</p>";
+      panel.innerHTML = "<p>AI 正在重新生成总结...</p>";
 
       const endpoint = type === "video" ? "/api/summary/comments" : "/api/summary/news";
       const items = type === "video" ? state.videoItems : state.newsItems;
@@ -779,7 +844,7 @@
 
     function resetSearch() {
       resultsEl.classList.remove("active");
-      homeEl.style.display = "flex";
+      homeEl.style.display = "grid";
       searchInput.focus();
     }
 

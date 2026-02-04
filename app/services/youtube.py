@@ -210,4 +210,7 @@ def _score_video(view_log: float, max_view_log: float, published_at: str | None,
         except ValueError:
             recency_score = 0.0
     relevance_score = 1.0 / (rank + 1)
-    return view_score * 0.35 + recency_score * 0.25 + relevance_score * 0.4
+    score = view_score * 0.6 + relevance_score * 0.25 + recency_score * 0.15
+    if view_score < 0.15:
+        score -= 0.05
+    return score

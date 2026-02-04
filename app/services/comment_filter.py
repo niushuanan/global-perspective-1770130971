@@ -119,7 +119,12 @@ LANGUAGE_KEYWORDS = {
 }
 
 
-def filter_comments(comments: list[dict], lang_key: str, limit: int) -> list[dict]:
+def filter_comments(
+    comments: list[dict],
+    lang_key: str,
+    limit: int,
+    use_lang_match: bool = True,
+) -> list[dict]:
     filtered = []
     for comment in comments:
         text = (comment.get("original") or "").strip()
@@ -131,7 +136,7 @@ def filter_comments(comments: list[dict], lang_key: str, limit: int) -> list[dic
             continue
         if _contains_blacklist(text, lang_key):
             continue
-        if not is_language_match(lang_key, text):
+        if use_lang_match and not is_language_match(lang_key, text):
             continue
         filtered.append(comment)
 

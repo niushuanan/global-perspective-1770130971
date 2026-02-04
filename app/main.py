@@ -102,7 +102,18 @@ async def fetch_video_for_lang(client, lang, query: str) -> dict[str, Any]:
             candidates,
             per_video,
             target_videos,
+            strict=True,
         )
+
+        if not selected:
+            selected = await _collect_videos_with_comments(
+                client,
+                lang,
+                candidates,
+                per_video,
+                target_videos,
+                strict=False,
+            )
 
         if not selected:
             return {
@@ -151,14 +162,22 @@ async def _translate_comments(client, comments: list[dict], lang) -> list[dict]:
     return translated
 
 
-async def _collect_videos_with_comments(client, lang, candidates, per_video: int, target: int):
+async def _collect_videos_with_comments(
+    client,
+    lang,
+    candidates,
+    per_video: int,
+    target: int,
+    strict: bool = True,
+):
     semaphore = asyncio.Semaphore(settings.max_concurrency)
 
     async def fetch_for(video):
-        if not video.get("langMatch", True):
-            return None
-        if "commentCount" in video and video.get("commentCount", 0) <= 0:
-            return None
+        if strict:
+            if not video.get("langMatch", True):
+                return None
+            if "commentCount" in video and video.get("commentCount", 0) <= 0:
+                return None
         async with semaphore:
             raw = await fetch_comments(
                 client,
@@ -166,7 +185,7 @@ async def _collect_videos_with_comments(client, lang, candidates, per_video: int
                 lang,
                 max_results=60,
             )
-        filtered = filter_comments(raw, lang.key, per_video)
+        filtered = filter_comments(raw, lang.key, per_video, use_lang_match=strict)
         if not filtered:
             return None
         return {"video": video, "comments": filtered}

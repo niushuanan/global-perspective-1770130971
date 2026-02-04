@@ -7,18 +7,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap"
     rel="stylesheet"
   />
   <style>
     :root {
       --ink: #0a0a0b;
-      --muted: #595b60;
+      --muted: #5b5e64;
       --paper: #f6f6f4;
       --panel: #ffffff;
-      --line: #d8d8d6;
+      --line: #cfcfcf;
       --shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
       --radius: 18px;
+      --serif: "Libre Baskerville", "Noto Serif SC", serif;
+      --sans: "Source Sans 3", "PingFang SC", sans-serif;
     }
 
     * {
@@ -28,7 +30,7 @@
     }
 
     body {
-      font-family: "Source Serif 4", "Noto Serif SC", "Songti SC", serif;
+      font-family: var(--serif);
       color: var(--ink);
       background: radial-gradient(circle at top right, rgba(0, 0, 0, 0.06), transparent 45%),
         linear-gradient(180deg, #f8f8f6 0%, #f2f2ee 100%);
@@ -50,7 +52,7 @@
     #app {
       position: relative;
       z-index: 1;
-      max-width: 1220px;
+      max-width: 1160px;
       margin: 0 auto;
       padding: 72px 24px 96px;
       display: flex;
@@ -59,12 +61,31 @@
     }
 
     .brand {
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
       text-transform: uppercase;
       letter-spacing: 0.4em;
       font-size: 11px;
       color: var(--muted);
       text-align: center;
+    }
+
+    .edition-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .edition-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--muted);
     }
 
     .masthead {
@@ -89,7 +110,7 @@
     }
 
     .hero h1 {
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
       font-size: clamp(20px, 2.4vw, 28px);
       line-height: 1.3;
       letter-spacing: 0.02em;
@@ -125,7 +146,7 @@
       font-size: 16px;
       font-weight: 600;
       color: var(--ink);
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
     }
 
     .search-box button {
@@ -138,7 +159,10 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
     }
 
     .search-box button:hover {
@@ -158,7 +182,7 @@
       border: 1px solid var(--line);
       padding: 6px 12px;
       border-radius: 999px;
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
     }
 
     .results {
@@ -187,7 +211,10 @@
       border-radius: 12px;
       font-weight: 600;
       box-shadow: var(--shadow);
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
     }
 
     .ghost-btn {
@@ -198,8 +225,11 @@
       font-weight: 600;
       cursor: pointer;
       color: var(--muted);
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
       transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
     }
 
     .ghost-btn:hover {
@@ -223,7 +253,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 12px;
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
     }
 
     .module-title h2 {
@@ -251,7 +281,10 @@
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 11px;
     }
 
     .primary-btn:disabled {
@@ -278,6 +311,7 @@
       border-radius: 16px;
       padding: 18px;
       background: #fdfdfc;
+      border-left: 3px solid var(--ink);
       display: none;
     }
 
@@ -304,6 +338,26 @@
       padding: 18px;
       background: #fff;
       box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+      position: relative;
+    }
+
+    .book-shell::before,
+    .book-shell::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      height: 1px;
+      background: var(--line);
+      opacity: 0.6;
+    }
+
+    .book-shell::before {
+      top: 12px;
+    }
+
+    .book-shell::after {
+      bottom: 12px;
     }
 
     .book-viewport {
@@ -362,7 +416,7 @@
       padding: 12px 16px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
       margin-top: 16px;
     }
 
@@ -404,7 +458,7 @@
       align-items: center;
       gap: 8px;
       font-weight: 700;
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
     }
 
     .tag {
@@ -439,7 +493,7 @@
     }
 
     summary {
-      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-family: var(--sans);
       font-weight: 600;
       cursor: pointer;
       list-style: none;
@@ -459,6 +513,7 @@
       column-count: 2;
       column-gap: 28px;
       margin-top: 12px;
+      column-rule: 1px solid rgba(0, 0, 0, 0.06);
     }
 
     .comment {
@@ -562,12 +617,19 @@
 <body>
   <div id="app">
     <section class="hero" id="home">
+      <div class="edition-bar">
+        <span>Opinion Index</span>
+        <span class="edition-dot"></span>
+        <span>Commentary Edition</span>
+        <span class="edition-dot"></span>
+        <span>Global Brief</span>
+      </div>
       <div class="brand">GLOBAL PERSPECTIVE ENGINE</div>
       <div class="masthead">全球视角</div>
       <div class="masthead-rule"></div>
       <h1>跨语言观点对比</h1>
       <p>
-        输入事件关键词，系统并行抓取多语言 YouTube 评论，自动过滤噪音并翻译为中文，支持按语言与全球总结。
+        输入事件关键词，系统并行抓取多语言 YouTube 评论，完成过滤、翻译与总结，呈现不同语言社区对同一事件的态度差异。
       </p>
       <div class="search-box">
         <input id="searchInput" type="text" placeholder="例如：习近平" value="习近平" />

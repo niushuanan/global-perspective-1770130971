@@ -30,6 +30,10 @@ def is_language_match(lang_key: str, text: str) -> bool:
         return bool(pattern.search(sample))
 
     if len(sample) < 6:
+        non_latin_count = len(NON_LATIN.findall(sample))
+        latin_count = len(LATIN.findall(sample))
+        if non_latin_count >= 1 and latin_count == 0:
+            return False
         return True
 
     non_latin_count = len(NON_LATIN.findall(sample))

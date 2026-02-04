@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>全球视角 | 跨语言评论对比</title>
+  <title>全球视角 | 跨语言观点对比</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -12,12 +12,12 @@
   />
   <style>
     :root {
-      --ink: #0b0b0c;
+      --ink: #0a0a0b;
       --muted: #595b60;
       --paper: #f6f6f4;
       --panel: #ffffff;
       --line: #d8d8d6;
-      --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      --shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
       --radius: 18px;
     }
 
@@ -50,7 +50,7 @@
     #app {
       position: relative;
       z-index: 1;
-      max-width: 1180px;
+      max-width: 1220px;
       margin: 0 auto;
       padding: 72px 24px 96px;
       display: flex;
@@ -110,7 +110,7 @@
 
     .search-box button {
       border: none;
-      background: #0b0b0c;
+      background: #0a0a0b;
       color: #fff;
       font-weight: 700;
       padding: 12px 26px;
@@ -224,7 +224,7 @@
 
     .primary-btn {
       border: none;
-      background: #0b0b0c;
+      background: #0a0a0b;
       color: #fff;
       font-weight: 700;
       padding: 10px 18px;
@@ -248,8 +248,8 @@
     }
 
     .status-pill.ready {
-      border-color: #0b0b0c;
-      color: #0b0b0c;
+      border-color: #0a0a0b;
+      color: #0a0a0b;
     }
 
     .summary-panel {
@@ -277,6 +277,62 @@
       margin-bottom: 8px;
     }
 
+    .book-shell {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
+    }
+
+    .book-viewport {
+      overflow: hidden;
+      border-radius: 16px;
+      background: #fdfdfc;
+      position: relative;
+      perspective: 1200px;
+    }
+
+    .book-track {
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.22, 0.7, 0.23, 1);
+      will-change: transform;
+    }
+
+    .page {
+      flex: 0 0 100%;
+      padding: 22px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      min-height: 520px;
+      position: relative;
+      box-shadow: 0 18px 26px rgba(0, 0, 0, 0.05);
+      transform-style: preserve-3d;
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 32px;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0));
+      pointer-events: none;
+    }
+
+    .page.is-active {
+      transform: rotateY(0deg);
+    }
+
+    .page.is-left {
+      transform: rotateY(-4deg);
+    }
+
+    .page.is-right {
+      transform: rotateY(4deg);
+    }
+
     .pager {
       display: flex;
       align-items: center;
@@ -286,6 +342,7 @@
       border: 1px solid var(--line);
       border-radius: 999px;
       font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      margin-top: 16px;
     }
 
     .pager-info {
@@ -297,6 +354,7 @@
       display: flex;
       gap: 6px;
       justify-content: center;
+      margin-top: 10px;
     }
 
     .pager-dot {
@@ -309,19 +367,8 @@
     }
 
     .pager-dot.active {
-      background: #0b0b0c;
-      border-color: #0b0b0c;
-    }
-
-    .language-page {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 18px;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      animation: fadeIn 0.4s ease;
+      background: #0a0a0b;
+      border-color: #0a0a0b;
     }
 
     .lang-head {
@@ -353,18 +400,21 @@
     .lang-meta {
       font-size: 12px;
       color: var(--muted);
+      margin-top: 6px;
     }
 
     .video-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      margin-top: 12px;
     }
 
     details {
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 12px 14px;
+      background: #fff;
     }
 
     summary {
@@ -428,6 +478,7 @@
       padding: 12px;
       border-radius: 12px;
       font-size: 13px;
+      margin-top: 12px;
     }
 
     .skeleton {
@@ -450,23 +501,13 @@
     }
 
     @keyframes shimmer {
-      0% {
-        background-position: -200% 0;
-      }
-      100% {
-        background-position: 200% 0;
-      }
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 720px) {
@@ -494,10 +535,10 @@
 <body>
   <div id="app">
     <section class="hero" id="home">
-      <div class="brand">Global Perspective Engine</div>
-      <h1>单一输入，全球评论对照。</h1>
+      <div class="brand">GLOBAL PERSPECTIVE</div>
+      <h1>全球视角，跨语言观点对比。</h1>
       <p>
-        输入事件关键词，系统并行抓取多语言 YouTube 评论，自动翻译成中文并生成总结，帮助你快速把握全球观点差异。
+        输入事件关键词，系统并行抓取多语言 YouTube 评论，自动过滤噪音并翻译为中文，支持按语言与全球总结。
       </p>
       <div class="search-box">
         <input id="searchInput" type="text" placeholder="例如：习近平" value="习近平" />
@@ -526,25 +567,28 @@
             <h2>多语言视频评论分析</h2>
             <span class="status-pill" id="videoStatus">等待检索</span>
           </div>
-          <p>每种语言选取前 10 个视频，每个视频取 5 条高赞评论，并进行翻译与总结。</p>
+          <p>每种语言采样 Top10 视频，每视频取 5 条高赞评论，并进行过滤与翻译。</p>
           <div class="module-actions">
             <button class="primary-btn" id="globalSummaryBtn" disabled>生成全球总结</button>
           </div>
         </div>
 
-        <div class="pager">
-          <button class="ghost-btn" id="prevLang">上一页</button>
-          <div class="pager-info" id="pagerInfo">-</div>
-          <button class="ghost-btn" id="nextLang">下一页</button>
+        <div class="book-shell">
+          <div class="book-viewport">
+            <div class="book-track" id="bookTrack"></div>
+          </div>
+          <div class="pager">
+            <button class="ghost-btn" id="prevLang">上一页</button>
+            <div class="pager-info" id="pagerInfo">-</div>
+            <button class="ghost-btn" id="nextLang">下一页</button>
+          </div>
+          <div class="pager-dots" id="pagerDots"></div>
         </div>
-        <div class="pager-dots" id="pagerDots"></div>
 
         <div class="summary-panel" id="globalSummary"></div>
-
-        <div id="languagePage"></div>
       </div>
 
-      <div class="footnote">评论抽样与过滤可调整，适用于商业级跨语言舆情观察。</div>
+      <div class="footnote">评论抽样与过滤可持续优化，适用于高阶全球舆情观察。</div>
     </section>
   </div>
 
@@ -560,15 +604,15 @@
     const queryTextEl = document.getElementById("queryText");
     const searchInput = document.getElementById("searchInput");
     const videoStatusEl = document.getElementById("videoStatus");
+    const bookTrackEl = document.getElementById("bookTrack");
     const pagerInfoEl = document.getElementById("pagerInfo");
     const pagerDotsEl = document.getElementById("pagerDots");
-    const languagePageEl = document.getElementById("languagePage");
     const globalSummaryBtn = document.getElementById("globalSummaryBtn");
     const globalSummaryEl = document.getElementById("globalSummary");
 
     function renderSkeleton() {
-      languagePageEl.innerHTML = `
-        <div class="language-page">
+      bookTrackEl.innerHTML = `
+        <div class="page">
           <div class="skeleton" style="width: 120px;"></div>
           <div class="skeleton" style="width: 70%;"></div>
           <div class="skeleton" style="width: 55%;"></div>
@@ -598,35 +642,18 @@
       }
     }
 
-    function renderPager() {
-      if (!state.items.length) {
-        pagerInfoEl.textContent = "-";
-        pagerDotsEl.innerHTML = "";
-        return;
-      }
-      const current = state.items[state.currentIndex];
-      pagerInfoEl.textContent = `${current.emoji} ${current.label} · ${state.currentIndex + 1}/${state.items.length}`;
-      pagerDotsEl.innerHTML = state.items
-        .map((_, index) => {
-          const active = index === state.currentIndex ? "active" : "";
-          return `<button class="pager-dot ${active}" data-index="${index}"></button>`;
-        })
+    function renderPages() {
+      bookTrackEl.innerHTML = state.items
+        .map((item) => buildPage(item))
         .join("");
-      pagerDotsEl.querySelectorAll(".pager-dot").forEach((dot) => {
-        dot.addEventListener("click", () => {
-          const idx = Number(dot.dataset.index);
-          goToPage(idx);
-        });
-      });
+      updatePageState();
+      bindLocalSummary();
     }
 
-    function renderLanguagePage() {
-      const item = state.items[state.currentIndex];
-      if (!item) return;
-
+    function buildPage(item) {
       if (item.error) {
-        languagePageEl.innerHTML = `
-          <div class="language-page">
+        return `
+          <div class="page">
             <div class="lang-head">
               <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
               <span class="tag">YouTube</span>
@@ -634,7 +661,6 @@
             <div class="error-box">${formatVideoError(item.error)}</div>
           </div>
         `;
-        return;
       }
 
       const videos = item.videos || [];
@@ -664,32 +690,70 @@
         })
         .join("");
 
-      languagePageEl.innerHTML = `
-        <div class="language-page">
+      return `
+        <div class="page" data-key="${item.key}">
           <div class="lang-head">
             <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
             <span class="tag">YouTube</span>
           </div>
           <div class="lang-meta">采样视频 ${item.videoCount || videos.length} · 评论 ${item.commentCount || 0}</div>
           <div class="module-actions">
-            <button class="primary-btn" id="localSummaryBtn">生成本语种总结</button>
+            <button class="primary-btn" data-action="local-summary" data-key="${item.key}">生成本语种总结</button>
           </div>
-          <div class="summary-panel" id="localSummary"></div>
+          <div class="summary-panel" id="localSummary-${item.key}"></div>
           <div class="video-list">${videoBlocks}</div>
         </div>
       `;
+    }
 
-      const localBtn = document.getElementById("localSummaryBtn");
-      const localPanel = document.getElementById("localSummary");
-      if (localBtn) {
-        localBtn.addEventListener("click", () => handleLocalSummary(item, localPanel));
+    function updatePager() {
+      if (!state.items.length) {
+        pagerInfoEl.textContent = "-";
+        pagerDotsEl.innerHTML = "";
+        return;
       }
+      const current = state.items[state.currentIndex];
+      pagerInfoEl.textContent = `${current.emoji} ${current.label} · ${state.currentIndex + 1}/${state.items.length}`;
+      pagerDotsEl.innerHTML = state.items
+        .map((_, index) => {
+          const active = index === state.currentIndex ? "active" : "";
+          return `<button class="pager-dot ${active}" data-index="${index}"></button>`;
+        })
+        .join("");
+      pagerDotsEl.querySelectorAll(".pager-dot").forEach((dot) => {
+        dot.addEventListener("click", () => {
+          const idx = Number(dot.dataset.index);
+          goToPage(idx);
+        });
+      });
+    }
+
+    function updatePageState() {
+      const pages = Array.from(bookTrackEl.children);
+      pages.forEach((page, index) => {
+        page.classList.toggle("is-active", index === state.currentIndex);
+        page.classList.toggle("is-left", index < state.currentIndex);
+        page.classList.toggle("is-right", index > state.currentIndex);
+      });
+      bookTrackEl.style.transform = `translateX(-${state.currentIndex * 100}%)`;
+    }
+
+    function bindLocalSummary() {
+      bookTrackEl.querySelectorAll("[data-action='local-summary']").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.key;
+          const item = state.items.find((it) => it.key === key);
+          const panel = document.getElementById(`localSummary-${key}`);
+          if (item && panel) {
+            handleLocalSummary(item, panel);
+          }
+        });
+      });
     }
 
     async function handleLocalSummary(item, panel) {
       panel.classList.add("active");
       panel.innerHTML = "<p>AI 正在生成本语种总结...</p>";
-
       try {
         const response = await fetch("/api/summary/comments", {
           method: "POST",
@@ -719,8 +783,8 @@
     function goToPage(index) {
       if (index < 0 || index >= state.items.length) return;
       state.currentIndex = index;
-      renderPager();
-      renderLanguagePage();
+      updatePager();
+      updatePageState();
     }
 
     async function startSearch() {
@@ -755,8 +819,8 @@
         state.items = data.items || [];
         setStatus(videoStatusEl, "评论已就绪", true);
         globalSummaryBtn.disabled = false;
-        renderPager();
-        renderLanguagePage();
+        renderPages();
+        updatePager();
       } catch (error) {
         setStatus(videoStatusEl, "抓取失败", false);
       }

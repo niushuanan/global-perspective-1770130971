@@ -62,28 +62,48 @@
       font-family: "Space Grotesk", "PingFang SC", sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.4em;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
+      text-align: center;
+    }
+
+    .masthead {
+      text-align: center;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .masthead-rule {
+      height: 1px;
+      background: var(--line);
+      margin: 12px auto 0;
+      max-width: 640px;
     }
 
     .hero {
       display: grid;
-      gap: 28px;
+      gap: 18px;
       animation: fadeIn 0.7s ease;
     }
 
     .hero h1 {
       font-family: "Space Grotesk", "PingFang SC", sans-serif;
-      font-size: clamp(34px, 5vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
+      font-size: clamp(20px, 2.4vw, 28px);
+      line-height: 1.3;
+      letter-spacing: 0.02em;
+      text-align: center;
+      color: var(--muted);
     }
 
     .hero p {
-      max-width: 640px;
+      max-width: 720px;
+      margin: 0 auto;
       color: var(--muted);
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.7;
+      text-align: center;
     }
 
     .search-box {
@@ -131,6 +151,7 @@
       gap: 10px;
       font-size: 12px;
       color: var(--muted);
+      justify-content: center;
     }
 
     .assist span {
@@ -435,9 +456,8 @@
     }
 
     .comment-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      column-count: 2;
+      column-gap: 28px;
       margin-top: 12px;
     }
 
@@ -446,6 +466,7 @@
       padding-top: 10px;
       display: grid;
       gap: 6px;
+      break-inside: avoid;
     }
 
     .comment:first-child {
@@ -510,6 +531,12 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @media (max-width: 900px) {
+      .comment-list {
+        column-count: 1;
+      }
+    }
+
     @media (max-width: 720px) {
       .search-box {
         grid-template-columns: 1fr;
@@ -535,8 +562,10 @@
 <body>
   <div id="app">
     <section class="hero" id="home">
-      <div class="brand">GLOBAL PERSPECTIVE</div>
-      <h1>全球视角，跨语言观点对比。</h1>
+      <div class="brand">GLOBAL PERSPECTIVE ENGINE</div>
+      <div class="masthead">全球视角</div>
+      <div class="masthead-rule"></div>
+      <h1>跨语言观点对比</h1>
       <p>
         输入事件关键词，系统并行抓取多语言 YouTube 评论，自动过滤噪音并翻译为中文，支持按语言与全球总结。
       </p>
@@ -548,6 +577,7 @@
         <span>中文</span>
         <span>English</span>
         <span>日本語</span>
+        <span>한국어</span>
         <span>Deutsch</span>
         <span>Français</span>
         <span>Español</span>

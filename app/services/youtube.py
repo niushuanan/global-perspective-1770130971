@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from math import log10
 
 from app.core.config import settings
+from app.services.language_match import is_language_match
 
 
 async def search_videos(client, query: str, lang, limit: int = 10) -> list[dict]:
@@ -16,21 +17,23 @@ async def search_video(client, query: str, lang) -> dict | None:
     return videos[0] if videos else None
 
 
-async def fetch_comments(client, video_id: str, lang, max_results: int = 40) -> list[dict]:
+async def fetch_comments(client, video_id: str, lang, max_results: int = 60) -> list[dict]:
     if settings.youtube_api_key:
         return await _fetch_comments_api(client, video_id, max_results=max_results)
     return await _fetch_comments_invidious_fallback(client, video_id, limit=10)
 
 
 async def _search_youtube_api(client, query: str, lang, limit: int = 10) -> list[dict]:
+    max_results = min(50, max(10, limit))
     params = {
         "part": "snippet",
-        "maxResults": 10,
+        "maxResults": max_results,
         "q": query,
         "type": "video",
         "order": "relevance",
         "relevanceLanguage": lang.youtube_lang,
         "regionCode": lang.youtube_region,
+        "fields": "items/id/videoId",
         "key": settings.youtube_api_key,
     }
     response = await client.get("https://www.googleapis.com/youtube/v3/search", params=params)
@@ -63,17 +66,21 @@ async def _search_youtube_api(client, query: str, lang, limit: int = 10) -> list
         comment_count = int(statistics.get("commentCount", 0) or 0)
         view_log = log10(view_count + 1)
         view_logs.append(view_log)
+        title = snippet.get("title", "")
+        channel = snippet.get("channelTitle", "")
+        match = is_language_match(lang.key, f"{title} {channel}")
         candidates.append(
             {
                 "videoId": video_id,
-                "title": snippet.get("title", ""),
-                "channel": snippet.get("channelTitle", ""),
+                "title": title,
+                "channel": channel,
                 "url": f"https://www.youtube.com/watch?v={video_id}",
                 "publishedAt": published_at or "",
                 "viewCount": view_count,
                 "commentCount": comment_count,
                 "rank": rank,
                 "viewLog": view_log,
+                "langMatch": match,
             }
         )
 
@@ -86,19 +93,22 @@ async def _search_youtube_api(client, query: str, lang, limit: int = 10) -> list
             item.get("rank", 0),
         )
         if item.get("commentCount", 0) > 0:
-            item["score"] += 0.05
+            item["score"] += 0.08
+        if item.get("langMatch"):
+            item["score"] += 0.12
 
     candidates.sort(key=lambda x: x.get("score", 0), reverse=True)
     return candidates[:limit]
 
 
-async def _fetch_comments_api(client, video_id: str, max_results: int = 40) -> list[dict]:
+async def _fetch_comments_api(client, video_id: str, max_results: int = 60) -> list[dict]:
     params = {
         "part": "snippet",
         "videoId": video_id,
         "maxResults": max_results,
         "order": "relevance",
         "textFormat": "plainText",
+        "fields": "items(snippet/topLevelComment/snippet(textDisplay,textOriginal,likeCount))",
         "key": settings.youtube_api_key,
     }
     response = await client.get("https://www.googleapis.com/youtube/v3/commentThreads", params=params)
@@ -174,6 +184,7 @@ async def _fetch_video_stats(client, video_ids: str) -> dict:
     params = {
         "part": "snippet,statistics",
         "id": video_ids,
+        "fields": "items(id,snippet(title,channelTitle,publishedAt),statistics(viewCount,commentCount))",
         "key": settings.youtube_api_key,
     }
     response = await client.get("https://www.googleapis.com/youtube/v3/videos", params=params)

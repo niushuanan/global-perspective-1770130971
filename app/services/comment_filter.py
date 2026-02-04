@@ -1,7 +1,9 @@
 import re
 
+from app.services.language_match import is_language_match
 
-LINK_PATTERN = re.compile(r"(https?://|www\.|\\b\\w+\\.\\w{2,})", re.IGNORECASE)
+
+LINK_PATTERN = re.compile(r"(https?://|www\.|\b\w+\.\w{2,})", re.IGNORECASE)
 
 GLOBAL_KEYWORDS = [
     "promo",
@@ -102,6 +104,18 @@ LANGUAGE_KEYWORDS = {
         "link",
         "promoção",
     ],
+    "ko": [
+        "할인",
+        "쿠폰",
+        "무료",
+        "구독",
+        "팔로우",
+        "링크",
+        "카톡",
+        "카카오",
+        "문의",
+        "프로모션",
+    ],
 }
 
 
@@ -116,6 +130,8 @@ def filter_comments(comments: list[dict], lang_key: str, limit: int) -> list[dic
         if _is_low_info(text):
             continue
         if _contains_blacklist(text, lang_key):
+            continue
+        if not is_language_match(lang_key, text):
             continue
         filtered.append(comment)
 

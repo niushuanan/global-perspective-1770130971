@@ -569,6 +569,36 @@
       height: 140px;
     }
 
+    .loading-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      background: #fff;
+    }
+
+    .loading-title {
+      font-family: var(--sans);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .loading-line {
+      height: 2px;
+      margin-top: 16px;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.08));
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 999px;
+    }
+
+    .loading-rows {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
     .footnote {
       font-size: 12px;
       color: var(--muted);
@@ -705,10 +735,16 @@
     function renderSkeleton() {
       bookTrackEl.innerHTML = `
         <div class="page">
-          <div class="skeleton" style="width: 120px;"></div>
-          <div class="skeleton" style="width: 70%;"></div>
-          <div class="skeleton" style="width: 55%;"></div>
-          <div class="skeleton skeleton-block"></div>
+          <div class="loading-card">
+            <div class="loading-title">Loading Commentary</div>
+            <div class="loading-line"></div>
+            <div class="loading-rows">
+              <div class="skeleton" style="width: 65%;"></div>
+              <div class="skeleton" style="width: 85%;"></div>
+              <div class="skeleton" style="width: 55%;"></div>
+              <div class="skeleton" style="width: 75%;"></div>
+            </div>
+          </div>
         </div>
       `;
     }

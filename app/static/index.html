@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>全球视角 | 跨语言观点对比</title>
+  <title>全球视角 | 跨语言评论对比</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -13,7 +13,7 @@
   <style>
     :root {
       --ink: #0b0b0c;
-      --muted: #57585c;
+      --muted: #595b60;
       --paper: #f6f6f4;
       --panel: #ffffff;
       --line: #d8d8d6;
@@ -252,20 +252,6 @@
       color: #0b0b0c;
     }
 
-    .pipeline {
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .pipeline span {
-      border: 1px solid var(--line);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
-
     .summary-panel {
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -291,13 +277,43 @@
       margin-bottom: 8px;
     }
 
-    .language-stack {
+    .pager {
       display: flex;
-      flex-direction: column;
-      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
     }
 
-    .lang-card {
+    .pager-info {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .pager-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .pager-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .pager-dot.active {
+      background: #0b0b0c;
+      border-color: #0b0b0c;
+    }
+
+    .language-page {
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 18px;
@@ -305,6 +321,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      animation: fadeIn 0.4s ease;
     }
 
     .lang-head {
@@ -333,31 +350,45 @@
       letter-spacing: 0.08em;
     }
 
-    .video-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    .lang-meta {
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    .video-block {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
+    .video-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
+    details {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    summary {
+      font-family: "Space Grotesk", "PingFang SC", sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
     .video-meta {
       font-size: 12px;
       color: var(--muted);
-      line-height: 1.5;
+      margin-top: 6px;
     }
 
     .comment-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      margin-top: 12px;
     }
 
     .comment {
@@ -388,37 +419,6 @@
       font-size: 11px;
       color: var(--muted);
       font-family: "Space Grotesk", "PingFang SC", sans-serif;
-    }
-
-    .news-grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    }
-
-    .news-card {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .news-summary {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .news-summary strong {
-      color: var(--ink);
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--line);
     }
 
     .error-box {
@@ -495,13 +495,12 @@
   <div id="app">
     <section class="hero" id="home">
       <div class="brand">Global Perspective Engine</div>
-      <h1>单一输入，全球叙事对照。</h1>
+      <h1>单一输入，全球评论对照。</h1>
       <p>
-        输入事件关键词，系统并行抓取多语言 YouTube 评论与新闻报道，自动翻译成中文并生成总结。
-        一次输入，获得多国观点的清晰对比。
+        输入事件关键词，系统并行抓取多语言 YouTube 评论，自动翻译成中文并生成总结，帮助你快速把握全球观点差异。
       </p>
       <div class="search-box">
-        <input id="searchInput" type="text" placeholder="例如：红海航运危机" value="红海航运危机" />
+        <input id="searchInput" type="text" placeholder="例如：习近平" value="习近平" />
         <button id="searchBtn">开始对比</button>
       </div>
       <div class="assist">
@@ -527,51 +526,33 @@
             <h2>多语言视频评论分析</h2>
             <span class="status-pill" id="videoStatus">等待检索</span>
           </div>
-          <p>每种语言选取播放量高、最新、相关度高的前 2 个视频，抓取点赞最多的 20 条评论并翻译成中文。</p>
+          <p>每种语言选取前 10 个视频，每个视频取 5 条高赞评论，并进行翻译与总结。</p>
           <div class="module-actions">
-            <button class="primary-btn" id="videoSummaryBtn" data-module="video" disabled>重新生成总结</button>
-            <div class="pipeline">
-              <span>多语言检索</span>
-              <span>双视频择优</span>
-              <span>高赞评论</span>
-              <span>中文翻译</span>
-            </div>
+            <button class="primary-btn" id="globalSummaryBtn" disabled>生成全球总结</button>
           </div>
         </div>
-        <div class="summary-panel" id="videoSummary"></div>
-        <div class="language-stack" id="videoCards"></div>
-      </div>
 
-      <div class="module" id="newsModule">
-        <div class="module-header">
-          <div class="module-title">
-            <h2>多语言新闻报道分析</h2>
-            <span class="status-pill" id="newsStatus">等待检索</span>
-          </div>
-          <p>从多来源新闻聚合中筛选可访问报道，提取正文生成中等长度摘要，并提供中文翻译。</p>
-          <div class="module-actions">
-            <button class="primary-btn" id="newsSummaryBtn" data-module="news" disabled>重新生成总结</button>
-            <div class="pipeline">
-              <span>多源检索</span>
-              <span>付费过滤</span>
-              <span>正文抽取</span>
-              <span>摘要生成</span>
-            </div>
-          </div>
+        <div class="pager">
+          <button class="ghost-btn" id="prevLang">上一页</button>
+          <div class="pager-info" id="pagerInfo">-</div>
+          <button class="ghost-btn" id="nextLang">下一页</button>
         </div>
-        <div class="summary-panel" id="newsSummary"></div>
-        <div class="news-grid" id="newsCards"></div>
+        <div class="pager-dots" id="pagerDots"></div>
+
+        <div class="summary-panel" id="globalSummary"></div>
+
+        <div id="languagePage"></div>
       </div>
 
-      <div class="footnote">自动化流程可扩展更多语言与平台，适用于商业级全球舆情观察。</div>
+      <div class="footnote">评论抽样与过滤可调整，适用于商业级跨语言舆情观察。</div>
     </section>
   </div>
 
   <script>
     const state = {
       query: "",
-      videoItems: [],
-      newsItems: [],
+      items: [],
+      currentIndex: 0,
     };
 
     const homeEl = document.getElementById("home");
@@ -579,42 +560,21 @@
     const queryTextEl = document.getElementById("queryText");
     const searchInput = document.getElementById("searchInput");
     const videoStatusEl = document.getElementById("videoStatus");
-    const newsStatusEl = document.getElementById("newsStatus");
-    const videoCardsEl = document.getElementById("videoCards");
-    const newsCardsEl = document.getElementById("newsCards");
-    const videoSummaryBtn = document.getElementById("videoSummaryBtn");
-    const newsSummaryBtn = document.getElementById("newsSummaryBtn");
-    const videoSummaryEl = document.getElementById("videoSummary");
-    const newsSummaryEl = document.getElementById("newsSummary");
+    const pagerInfoEl = document.getElementById("pagerInfo");
+    const pagerDotsEl = document.getElementById("pagerDots");
+    const languagePageEl = document.getElementById("languagePage");
+    const globalSummaryBtn = document.getElementById("globalSummaryBtn");
+    const globalSummaryEl = document.getElementById("globalSummary");
 
-    function renderSkeleton(targetEl, count) {
-      targetEl.innerHTML = Array.from({ length: count })
-        .map(
-          () => `
-          <div class="lang-card">
-            <div class="skeleton" style="width: 120px;"></div>
-            <div class="skeleton" style="width: 80%;"></div>
-            <div class="skeleton" style="width: 60%;"></div>
-            <div class="skeleton skeleton-block"></div>
-          </div>
-        `
-        )
-        .join("");
-    }
-
-    function renderNewsSkeleton(targetEl, count) {
-      targetEl.innerHTML = Array.from({ length: count })
-        .map(
-          () => `
-          <div class="news-card">
-            <div class="skeleton" style="width: 90px;"></div>
-            <div class="skeleton" style="width: 70%;"></div>
-            <div class="skeleton" style="width: 85%;"></div>
-            <div class="skeleton skeleton-block"></div>
-          </div>
-        `
-        )
-        .join("");
+    function renderSkeleton() {
+      languagePageEl.innerHTML = `
+        <div class="language-page">
+          <div class="skeleton" style="width: 120px;"></div>
+          <div class="skeleton" style="width: 70%;"></div>
+          <div class="skeleton" style="width: 55%;"></div>
+          <div class="skeleton skeleton-block"></div>
+        </div>
+      `;
     }
 
     function setStatus(el, text, ready) {
@@ -624,12 +584,8 @@
 
     function formatCount(value) {
       const num = Number(value || 0);
-      if (num >= 1_000_000) {
-        return (num / 1_000_000).toFixed(1) + "M";
-      }
-      if (num >= 1_000) {
-        return (num / 1_000).toFixed(1) + "K";
-      }
+      if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+      if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
       return String(num);
     }
 
@@ -642,92 +598,110 @@
       }
     }
 
-    function renderVideoCards(items) {
-      videoCardsEl.innerHTML = items
-        .map((item) => {
-          if (item.error) {
-            const message = formatVideoError(item.error);
-            return `
-              <div class="lang-card">
-                <div class="lang-head">
-                  <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                  <span class="tag">YouTube</span>
-                </div>
-                <div class="error-box">${message}</div>
-              </div>
-            `;
-          }
-
-          const videos = item.videos || [];
-          const videoBlocks = videos
-            .map((video, index) => {
-              const comments = video.comments || [];
-              return `
-                <div class="video-block">
-                  <div class="video-meta">视频 ${index + 1} · ${video.title || "-"}</div>
-                  <div class="video-meta">频道：${video.channel || "-"}</div>
-                  <div class="video-meta">播放量：${formatCount(video.viewCount)} · 发布时间：${formatDate(video.publishedAt)}</div>
-                  <div class="comment-list">
-                    ${comments
-                      .map(
-                        (comment) => `
-                        <div class="comment">
-                          <div class="original">${comment.original || ""}</div>
-                          <div class="translated">${comment.translated || ""}</div>
-                          <div class="likes">👍 ${formatCount(comment.likeCount)}</div>
-                        </div>
-                      `
-                      )
-                      .join("")}
-                  </div>
-                </div>
-              `;
-            })
-            .join("");
-
-          return `
-            <div class="lang-card">
-              <div class="lang-head">
-                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                <span class="tag">YouTube</span>
-              </div>
-              <div class="video-grid">${videoBlocks}</div>
-            </div>
-          `;
+    function renderPager() {
+      if (!state.items.length) {
+        pagerInfoEl.textContent = "-";
+        pagerDotsEl.innerHTML = "";
+        return;
+      }
+      const current = state.items[state.currentIndex];
+      pagerInfoEl.textContent = `${current.emoji} ${current.label} · ${state.currentIndex + 1}/${state.items.length}`;
+      pagerDotsEl.innerHTML = state.items
+        .map((_, index) => {
+          const active = index === state.currentIndex ? "active" : "";
+          return `<button class="pager-dot ${active}" data-index="${index}"></button>`;
         })
         .join("");
+      pagerDotsEl.querySelectorAll(".pager-dot").forEach((dot) => {
+        dot.addEventListener("click", () => {
+          const idx = Number(dot.dataset.index);
+          goToPage(idx);
+        });
+      });
     }
 
-    function renderNewsCards(items) {
-      newsCardsEl.innerHTML = items
-        .map((item) => {
-          if (item.error) {
-            const message = formatNewsError(item.error);
-            return `
-              <div class="news-card">
-                <div class="lang-head">
-                  <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                  <span class="tag">News</span>
-                </div>
-                <div class="error-box">${message}</div>
-              </div>
-            `;
-          }
-          return `
-            <div class="news-card">
-              <div class="lang-head">
-                <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
-                <span class="tag">News</span>
-              </div>
-              <div class="video-meta">来源：${item.article?.source || "-"}</div>
-              <div class="video-meta">标题：${item.article?.title || "-"}</div>
-              <div class="divider"></div>
-              <div class="news-summary"><strong>摘要：</strong>${item.summary || ""}</div>
-              <div class="news-summary"><strong>中文译文：</strong>${item.summaryZh || ""}</div>
+    function renderLanguagePage() {
+      const item = state.items[state.currentIndex];
+      if (!item) return;
+
+      if (item.error) {
+        languagePageEl.innerHTML = `
+          <div class="language-page">
+            <div class="lang-head">
+              <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+              <span class="tag">YouTube</span>
             </div>
+            <div class="error-box">${formatVideoError(item.error)}</div>
+          </div>
+        `;
+        return;
+      }
+
+      const videos = item.videos || [];
+      const videoBlocks = videos
+        .map((video, index) => {
+          const comments = video.comments || [];
+          return `
+            <details ${index < 2 ? "open" : ""}>
+              <summary>${index + 1}. ${video.title || "-"}</summary>
+              <div class="video-meta">频道：${video.channel || "-"}</div>
+              <div class="video-meta">播放量：${formatCount(video.viewCount)} · 发布时间：${formatDate(video.publishedAt)}</div>
+              <div class="comment-list">
+                ${comments
+                  .map(
+                    (comment) => `
+                    <div class="comment">
+                      <div class="original">${comment.original || ""}</div>
+                      <div class="translated">${comment.translated || ""}</div>
+                      <div class="likes">👍 ${formatCount(comment.likeCount)}</div>
+                    </div>
+                  `
+                  )
+                  .join("")}
+              </div>
+            </details>
           `;
         })
         .join("");
+
+      languagePageEl.innerHTML = `
+        <div class="language-page">
+          <div class="lang-head">
+            <div class="lang-title"><span>${item.emoji}</span>${item.label}</div>
+            <span class="tag">YouTube</span>
+          </div>
+          <div class="lang-meta">采样视频 ${item.videoCount || videos.length} · 评论 ${item.commentCount || 0}</div>
+          <div class="module-actions">
+            <button class="primary-btn" id="localSummaryBtn">生成本语种总结</button>
+          </div>
+          <div class="summary-panel" id="localSummary"></div>
+          <div class="video-list">${videoBlocks}</div>
+        </div>
+      `;
+
+      const localBtn = document.getElementById("localSummaryBtn");
+      const localPanel = document.getElementById("localSummary");
+      if (localBtn) {
+        localBtn.addEventListener("click", () => handleLocalSummary(item, localPanel));
+      }
+    }
+
+    async function handleLocalSummary(item, panel) {
+      panel.classList.add("active");
+      panel.innerHTML = "<p>AI 正在生成本语种总结...</p>";
+
+      try {
+        const response = await fetch("/api/summary/comments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: state.query, items: [item], scope: "local" }),
+        });
+        if (!response.ok) throw new Error("Summary failed");
+        const data = await response.json();
+        showSummary(panel, "本语种总结", data.summary || "暂无结果");
+      } catch (error) {
+        panel.innerHTML = "<p>总结生成失败，请稍后重试。</p>";
+      }
     }
 
     function showSummary(panel, title, content) {
@@ -742,6 +716,13 @@
       panel.classList.add("active");
     }
 
+    function goToPage(index) {
+      if (index < 0 || index >= state.items.length) return;
+      state.currentIndex = index;
+      renderPager();
+      renderLanguagePage();
+    }
+
     async function startSearch() {
       const query = searchInput.value.trim();
       if (!query) {
@@ -750,95 +731,52 @@
       }
 
       state.query = query;
-      state.videoItems = [];
-      state.newsItems = [];
+      state.items = [];
+      state.currentIndex = 0;
 
       queryTextEl.textContent = query;
       homeEl.style.display = "none";
       resultsEl.classList.add("active");
+      globalSummaryBtn.disabled = true;
+      globalSummaryEl.classList.remove("active");
+      globalSummaryEl.innerHTML = "";
 
-      renderSkeleton(videoCardsEl, 7);
-      renderNewsSkeleton(newsCardsEl, 7);
-
+      renderSkeleton();
       setStatus(videoStatusEl, "正在抓取评论", false);
-      setStatus(newsStatusEl, "正在抓取新闻", false);
-      videoSummaryBtn.disabled = true;
-      newsSummaryBtn.disabled = true;
-      videoSummaryEl.classList.remove("active");
-      newsSummaryEl.classList.remove("active");
-      videoSummaryEl.innerHTML = "";
-      newsSummaryEl.innerHTML = "";
 
-      fetchModule("/api/video", query, (items, summary) => {
-        state.videoItems = items;
-        renderVideoCards(items);
-        setStatus(videoStatusEl, "评论已就绪", true);
-        videoSummaryBtn.disabled = false;
-        if (summary) {
-          showSummary(videoSummaryEl, "AI 总结", summary);
-        }
-      }, () => {
-        setStatus(videoStatusEl, "抓取失败", false);
-      });
-
-      fetchModule("/api/news", query, (items, summary) => {
-        state.newsItems = items;
-        renderNewsCards(items);
-        setStatus(newsStatusEl, "新闻已就绪", true);
-        newsSummaryBtn.disabled = false;
-        if (summary) {
-          showSummary(newsSummaryEl, "AI 总结", summary);
-        }
-      }, () => {
-        setStatus(newsStatusEl, "抓取失败", false);
-      });
-    }
-
-    async function fetchModule(endpoint, query, onSuccess, onError) {
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch("/api/video", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
         });
-        if (!response.ok) {
-          throw new Error("Request failed");
-        }
+        if (!response.ok) throw new Error("Request failed");
         const data = await response.json();
-        onSuccess(data.items || [], data.summary || "");
+        state.items = data.items || [];
+        setStatus(videoStatusEl, "评论已就绪", true);
+        globalSummaryBtn.disabled = false;
+        renderPager();
+        renderLanguagePage();
       } catch (error) {
-        onError(error);
+        setStatus(videoStatusEl, "抓取失败", false);
       }
     }
 
-    async function handleSummary(type) {
-      if (type === "video" && !state.videoItems.length) {
-        return;
-      }
-      if (type === "news" && !state.newsItems.length) {
-        return;
-      }
-
-      const panel = type === "video" ? videoSummaryEl : newsSummaryEl;
-      panel.classList.add("active");
-      panel.innerHTML = "<p>AI 正在重新生成总结...</p>";
-
-      const endpoint = type === "video" ? "/api/summary/comments" : "/api/summary/news";
-      const items = type === "video" ? state.videoItems : state.newsItems;
-
+    async function handleGlobalSummary() {
+      if (!state.items.length) return;
+      globalSummaryEl.classList.add("active");
+      globalSummaryEl.innerHTML = "<p>AI 正在生成全球总结...</p>";
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch("/api/summary/comments", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: state.query, items }),
+          body: JSON.stringify({ query: state.query, items: state.items, scope: "global" }),
         });
-        if (!response.ok) {
-          throw new Error("Summary failed");
-        }
+        if (!response.ok) throw new Error("Summary failed");
         const data = await response.json();
-        showSummary(panel, "AI 总结", data.summary || "暂无结果");
+        showSummary(globalSummaryEl, "全球总结", data.summary || "暂无结果");
       } catch (error) {
-        panel.innerHTML = "<p>AI 总结生成失败，请稍后重试。</p>";
+        globalSummaryEl.innerHTML = "<p>总结生成失败，请稍后重试。</p>";
       }
     }
 
@@ -859,21 +797,11 @@
       return "视频获取失败";
     }
 
-    function formatNewsError(error) {
-      if (!error) return "新闻获取失败";
-      if (error.includes("未找到新闻结果")) {
-        return "暂时未找到相关新闻";
-      }
-      if (error.includes("未找到可免费访问")) {
-        return "页面可能为付费内容，已自动跳过";
-      }
-      return "新闻获取失败";
-    }
-
     document.getElementById("searchBtn").addEventListener("click", startSearch);
     document.getElementById("resetBtn").addEventListener("click", resetSearch);
-    videoSummaryBtn.addEventListener("click", () => handleSummary("video"));
-    newsSummaryBtn.addEventListener("click", () => handleSummary("news"));
+    document.getElementById("prevLang").addEventListener("click", () => goToPage(state.currentIndex - 1));
+    document.getElementById("nextLang").addEventListener("click", () => goToPage(state.currentIndex + 1));
+    globalSummaryBtn.addEventListener("click", handleGlobalSummary);
 
     searchInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {

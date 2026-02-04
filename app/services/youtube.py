@@ -4,7 +4,7 @@ from math import log10
 from app.core.config import settings
 
 
-async def search_videos(client, query: str, lang, limit: int = 2) -> list[dict]:
+async def search_videos(client, query: str, lang, limit: int = 10) -> list[dict]:
     if settings.youtube_api_key:
         return await _search_youtube_api(client, query, lang, limit=limit)
     fallback = await _search_invidious_fallback(client, query)
@@ -16,13 +16,13 @@ async def search_video(client, query: str, lang) -> dict | None:
     return videos[0] if videos else None
 
 
-async def fetch_comments(client, video_id: str, lang, limit: int = 10) -> list[dict]:
+async def fetch_comments(client, video_id: str, lang, max_results: int = 40) -> list[dict]:
     if settings.youtube_api_key:
-        return await _fetch_comments_api(client, video_id, limit=limit)
-    return await _fetch_comments_invidious_fallback(client, video_id, limit=limit)
+        return await _fetch_comments_api(client, video_id, max_results=max_results)
+    return await _fetch_comments_invidious_fallback(client, video_id, limit=10)
 
 
-async def _search_youtube_api(client, query: str, lang, limit: int = 2) -> list[dict]:
+async def _search_youtube_api(client, query: str, lang, limit: int = 10) -> list[dict]:
     params = {
         "part": "snippet",
         "maxResults": 10,
@@ -92,11 +92,11 @@ async def _search_youtube_api(client, query: str, lang, limit: int = 2) -> list[
     return candidates[:limit]
 
 
-async def _fetch_comments_api(client, video_id: str, limit: int = 10) -> list[dict]:
+async def _fetch_comments_api(client, video_id: str, max_results: int = 40) -> list[dict]:
     params = {
         "part": "snippet",
         "videoId": video_id,
-        "maxResults": 100,
+        "maxResults": max_results,
         "order": "relevance",
         "textFormat": "plainText",
         "key": settings.youtube_api_key,
@@ -114,7 +114,7 @@ async def _fetch_comments_api(client, video_id: str, limit: int = 10) -> list[di
         if text:
             results.append({"original": text, "likeCount": int(snippet.get("likeCount", 0) or 0)})
     results.sort(key=lambda x: x.get("likeCount", 0), reverse=True)
-    return results[:limit]
+    return results
 
 
 async def _search_invidious_fallback(client, query: str) -> dict | None:

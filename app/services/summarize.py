@@ -27,10 +27,34 @@ async def summarize_article(client, query: str, lang_label: str, text: str, outp
 async def summarize_comments_overview(client, query: str, comments_payload: str) -> str:
     system = "你是跨语言舆情分析专家，擅长提炼不同国家/语言群体的态度差异。"
     user = (
-        "请基于多语言评论内容生成结构化报告：\n"
-        "1) 总体情绪倾向\n"
-        "2) 各语言/地区主要观点（每组1-2条）\n"
-        "3) 观点差异与可能原因\n"
+        "请基于多语言评论生成结构化报告，按以下顺序输出：\n"
+        "1) 各语言观点摘要（每种语言1-2条）\n"
+        "2) 总体情绪倾向\n"
+        "3) 主要共识（2-3条）\n"
+        "4) 主要分歧（2-3条）\n"
+        "5) 可能原因（1-2条）\n"
+        "要求：用中文输出，语气中立，条目清晰。\n"
+        f"事件关键词：{query}\n"
+        f"评论内容：{comments_payload}"
+    )
+    return await chat(
+        client,
+        [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        temperature=0.3,
+        max_tokens=900,
+    )
+
+
+async def summarize_comments_local(client, query: str, comments_payload: str) -> str:
+    system = "你是语言社区观察员，擅长总结单一语言评论区的主要观点。"
+    user = (
+        "请基于单一语言评论生成简洁总结，按以下顺序输出：\n"
+        "1) 观点摘要（3-5条）\n"
+        "2) 情绪倾向（正面/中性/负面，并给一句解释）\n"
+        "3) 关注焦点（关键词3-5个）\n"
         "要求：用中文输出，语气中立，结构清晰。\n"
         f"事件关键词：{query}\n"
         f"评论内容：{comments_payload}"

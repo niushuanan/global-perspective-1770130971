@@ -102,18 +102,8 @@ async def fetch_video_for_lang(client, lang, query: str) -> dict[str, Any]:
             candidates,
             per_video,
             target_videos,
-            strict=True,
+            strict=False,
         )
-
-        if not selected:
-            selected = await _collect_videos_with_comments(
-                client,
-                lang,
-                candidates,
-                per_video,
-                target_videos,
-                strict=False,
-            )
 
         if not selected:
             return {

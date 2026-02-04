@@ -123,7 +123,7 @@ def filter_comments(
     comments: list[dict],
     lang_key: str,
     limit: int,
-    use_lang_match: bool = True,
+    use_lang_match: bool = False,
 ) -> list[dict]:
     filtered = []
     for comment in comments:

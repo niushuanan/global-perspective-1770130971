@@ -1,0 +1,245 @@
+{
+  "topic": "美国索取格陵兰岛",
+  "videosByLanguage": {
+    "zh": [
+      {
+        "videoId": "mock-zh-1",
+        "title": "如果美国索取格陵兰，背后的真正算盘",
+        "channel": "北极观察",
+        "viewCount": 1280000,
+        "publishedAt": "2025-11-20T00:00:00Z",
+        "comments": [
+          {"original": "这更像是地缘政治博弈，不是交易。", "translated": "这更像是地缘政治博弈，不是交易。", "likeCount": 1200},
+          {"original": "格陵兰有自治权，关键要尊重当地居民。", "translated": "格陵兰有自治权，关键要尊重当地居民。", "likeCount": 980},
+          {"original": "美国的关注点是北极航道和资源。", "translated": "美国的关注点是北极航道和资源。", "likeCount": 860},
+          {"original": "丹麦不会同意，政治上不可行。", "translated": "丹麦不会同意，政治上不可行。", "likeCount": 740},
+          {"original": "话题炒作多，实际操作难。", "translated": "话题炒作多，实际操作难。", "likeCount": 520}
+        ]
+      },
+      {
+        "videoId": "mock-zh-2",
+        "title": "北极新格局：格陵兰为何成焦点",
+        "channel": "地缘前线",
+        "viewCount": 760000,
+        "publishedAt": "2025-12-18T00:00:00Z",
+        "comments": [
+          {"original": "如果谈合作而非购买，可能更现实。", "translated": "如果谈合作而非购买，可能更现实。", "likeCount": 880},
+          {"original": "安全与战略前哨的想法很明显。", "translated": "安全与战略前哨的想法很明显。", "likeCount": 690},
+          {"original": "媒体渲染夸张，先看官方表态。", "translated": "媒体渲染夸张，先看官方表态。", "likeCount": 540},
+          {"original": "北极治理需要多边协商。", "translated": "北极治理需要多边协商。", "likeCount": 610},
+          {"original": "这件事折射大国竞争升温。", "translated": "这件事折射大国竞争升温。", "likeCount": 730}
+        ]
+      }
+    ],
+    "en": [
+      {
+        "videoId": "mock-en-1",
+        "title": "Why Greenland Suddenly Matters",
+        "channel": "Arctic Brief",
+        "viewCount": 1540000,
+        "publishedAt": "2025-10-12T00:00:00Z",
+        "comments": [
+          {"original": "Buying Greenland isn't a policy, it's a headline.", "translated": "买格陵兰不是政策，只是个标题。", "likeCount": 2100},
+          {"original": "Denmark won't sell, and Greenlanders have their own voice.", "translated": "丹麦不会卖，格陵兰人有自己的声音。", "likeCount": 1800},
+          {"original": "Strategically it makes sense, but the framing was clumsy.", "translated": "从战略上说有道理，但表述很笨拙。", "likeCount": 1600},
+          {"original": "This is more about Arctic routes than ice.", "translated": "这更多是北极航道的问题，而不是冰。", "likeCount": 1200},
+          {"original": "Feels like a distraction from domestic issues.", "translated": "感觉像是转移国内问题注意力。", "likeCount": 950}
+        ]
+      },
+      {
+        "videoId": "mock-en-2",
+        "title": "Greenland, Strategy, and Optics",
+        "channel": "Global Lens",
+        "viewCount": 980000,
+        "publishedAt": "2025-12-03T00:00:00Z",
+        "comments": [
+          {"original": "Asking is fine, insisting isn't.", "translated": "提出可以，但强求不行。", "likeCount": 1400},
+          {"original": "If it's about investment, call it that.", "translated": "如果是投资，就明说是投资。", "likeCount": 1100},
+          {"original": "Every big power is looking north now.", "translated": "各大国都在向北看。", "likeCount": 1000},
+          {"original": "The optics are terrible, the logic is obvious.", "translated": "观感很糟，但逻辑很明显。", "likeCount": 900},
+          {"original": "Let Greenland decide, not Washington or Copenhagen.", "translated": "让格陵兰自己决定，而不是华盛顿或哥本哈根。", "likeCount": 1300}
+        ]
+      }
+    ],
+    "ja": [
+      {
+        "videoId": "mock-ja-1",
+        "title": "グリーンランド購入論の裏側",
+        "channel": "北極チャンネル",
+        "viewCount": 620000,
+        "publishedAt": "2025-09-28T00:00:00Z",
+        "comments": [
+          {"original": "グリーンランドの自治を尊重すべきだ。", "translated": "应当尊重格陵兰的自治。", "likeCount": 900},
+          {"original": "資源よりも航路の話だと思う。", "translated": "我觉得更多是航路而非资源。", "likeCount": 780},
+          {"original": "購入という言い方が反感を招く。", "translated": "“购买”的说法容易引发反感。", "likeCount": 720},
+          {"original": "北極は国際協調が必要。", "translated": "北极需要国际合作。", "likeCount": 640},
+          {"original": "実現性は低いけど議論は面白い。", "translated": "可行性不高但讨论有意思。", "likeCount": 560}
+        ]
+      },
+      {
+        "videoId": "mock-ja-2",
+        "title": "北極の地政学とグリーンランド",
+        "channel": "国際解説",
+        "viewCount": 410000,
+        "publishedAt": "2025-12-21T00:00:00Z",
+        "comments": [
+          {"original": "投資や協力なら可能性はある。", "translated": "如果是投资或合作，才有可能。", "likeCount": 680},
+          {"original": "デンマークが簡単に手放すはずがない。", "translated": "丹麦不可能轻易放手。", "likeCount": 730},
+          {"original": "地元の声を無視してはいけない。", "translated": "不能忽视当地声音。", "likeCount": 610},
+          {"original": "戦略上の価値は確かに高い。", "translated": "战略价值确实很高。", "likeCount": 590},
+          {"original": "政治的パフォーマンスに見える。", "translated": "看起来像政治表演。", "likeCount": 540}
+        ]
+      }
+    ],
+    "ko": [
+      {
+        "videoId": "mock-ko-1",
+        "title": "그린란드 논란, 진짜 이유는?",
+        "channel": "북극포커스",
+        "viewCount": 520000,
+        "publishedAt": "2025-10-30T00:00:00Z",
+        "comments": [
+          {"original": "그린란드 주민 의사가 가장 중요하다.", "translated": "格陵兰居民的意愿最重要。", "likeCount": 820},
+          {"original": "구매라는 표현 자체가 시대착오적.", "translated": "“购买”这个表达本身过时。", "likeCount": 770},
+          {"original": "북극 항로와 자원 경쟁이 핵심.", "translated": "核心是北极航道和资源竞争。", "likeCount": 690},
+          {"original": "덴마크가 쉽게 동의할 리 없다.", "translated": "丹麦不可能轻易同意。", "likeCount": 610},
+          {"original": "현실성보다 메시지가 큰 듯.", "translated": "现实性不如姿态重要。", "likeCount": 540}
+        ]
+      },
+      {
+        "videoId": "mock-ko-2",
+        "title": "북극 전략과 그린란드의 가치",
+        "channel": "국제시선",
+        "viewCount": 330000,
+        "publishedAt": "2025-12-10T00:00:00Z",
+        "comments": [
+          {"original": "협력과 투자라면 대화는 가능.", "translated": "如果是合作和投资，可能有对话空间。", "likeCount": 640},
+          {"original": "국제 규범을 지키는 게 우선.", "translated": "遵守国际规范是第一位。", "likeCount": 560},
+          {"original": "강대국 경쟁이 더 격해지고 있다.", "translated": "大国竞争更激烈了。", "likeCount": 590},
+          {"original": "외교적으로는 부담이 큰 제안.", "translated": "外交上负担很大。", "likeCount": 500},
+          {"original": "지역 자치를 존중해야 한다.", "translated": "应当尊重地区自治。", "likeCount": 620}
+        ]
+      }
+    ],
+    "de": [
+      {
+        "videoId": "mock-de-1",
+        "title": "Grönland kaufen? Hintergründe und Motive",
+        "channel": "Arktis Forum",
+        "viewCount": 450000,
+        "publishedAt": "2025-09-16T00:00:00Z",
+        "comments": [
+          {"original": "Das klingt nach Symbolpolitik.", "translated": "这听起来像象征性政治。", "likeCount": 780},
+          {"original": "Grönland ist kein Immobilienobjekt.", "translated": "格陵兰不是房地产。", "likeCount": 820},
+          {"original": "Die Arktis wird strategisch immer wichtiger.", "translated": "北极战略价值越来越高。", "likeCount": 710},
+          {"original": "Ohne die Zustimmung der Bewohner geht nichts.", "translated": "没有居民同意就不可能。", "likeCount": 640},
+          {"original": "Dänemark wird das nicht zulassen.", "translated": "丹麦不会允许。", "likeCount": 600}
+        ]
+      },
+      {
+        "videoId": "mock-de-2",
+        "title": "Arktische Geopolitik erklärt",
+        "channel": "Weltpolitik",
+        "viewCount": 390000,
+        "publishedAt": "2025-12-05T00:00:00Z",
+        "comments": [
+          {"original": "Kooperation ja, Kauf nein.", "translated": "合作可以，购买不行。", "likeCount": 660},
+          {"original": "Die Rhetorik ist das eigentliche Problem.", "translated": "问题在于修辞。", "likeCount": 540},
+          {"original": "Es geht um Ressourcen und Routen.", "translated": "关乎资源与航线。", "likeCount": 590},
+          {"original": "Die Idee wirkt rückwärtsgewandt.", "translated": "想法显得复古。", "likeCount": 520},
+          {"original": "Mehr Diplomatie, weniger Schlagzeilen.", "translated": "需要更多外交、少点头条。", "likeCount": 610}
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "videoId": "mock-fr-1",
+        "title": "Pourquoi la Groenland est au cœur des tensions",
+        "channel": "Nord Politique",
+        "viewCount": 410000,
+        "publishedAt": "2025-09-22T00:00:00Z",
+        "comments": [
+          {"original": "La souveraineté ne se négocie pas.", "translated": "主权不应被交易。", "likeCount": 740},
+          {"original": "Les Groenlandais doivent décider.", "translated": "应由格陵兰人决定。", "likeCount": 700},
+          {"original": "C'est une question de routes arctiques.", "translated": "这是关于北极航线的问题。", "likeCount": 620},
+          {"original": "L'annonce était maladroite.", "translated": "表述很不妥。", "likeCount": 540},
+          {"original": "On voit la rivalité des grandes puissances.", "translated": "能看到大国竞争。", "likeCount": 580}
+        ]
+      },
+      {
+        "videoId": "mock-fr-2",
+        "title": "Groenland: enjeux stratégiques",
+        "channel": "Analyse Globale",
+        "viewCount": 360000,
+        "publishedAt": "2025-12-11T00:00:00Z",
+        "comments": [
+          {"original": "Mieux vaut parler de partenariats.", "translated": "不如谈伙伴关系。", "likeCount": 610},
+          {"original": "Le Danemark ne vendra pas.", "translated": "丹麦不会卖。", "likeCount": 690},
+          {"original": "La géopolitique du Nord s'intensifie.", "translated": "北方地缘政治在加速。", "likeCount": 560},
+          {"original": "Symboliquement, c'est choquant.", "translated": "在象征层面很冲击。", "likeCount": 520},
+          {"original": "La coopération internationale est indispensable.", "translated": "国际合作必不可少。", "likeCount": 580}
+        ]
+      }
+    ],
+    "es": [
+      {
+        "videoId": "mock-es-1",
+        "title": "El debate sobre Groenlandia",
+        "channel": "Ruta Ártica",
+        "viewCount": 480000,
+        "publishedAt": "2025-10-05T00:00:00Z",
+        "comments": [
+          {"original": "El Ártico se vuelve estratégico.", "translated": "北极正变得更具战略性。", "likeCount": 720},
+          {"original": "Comprar territorio suena anacrónico.", "translated": "购买领土听起来很过时。", "likeCount": 760},
+          {"original": "Groenlandia tiene voz propia.", "translated": "格陵兰有自己的声音。", "likeCount": 640},
+          {"original": "Más interés por rutas que por hielo.", "translated": "更多是航路而非冰。", "likeCount": 580},
+          {"original": "Pura política interna.", "translated": "纯粹是国内政治。", "likeCount": 520}
+        ]
+      },
+      {
+        "videoId": "mock-es-2",
+        "title": "Geopolítica del Norte explicada",
+        "channel": "Mundo en Contexto",
+        "viewCount": 350000,
+        "publishedAt": "2025-12-15T00:00:00Z",
+        "comments": [
+          {"original": "Si es inversión, díganlo así.", "translated": "如果是投资，就该这样说。", "likeCount": 600},
+          {"original": "Dinamarca no aceptará.", "translated": "丹麦不会接受。", "likeCount": 660},
+          {"original": "La propuesta daña la imagen.", "translated": "这个提议损害形象。", "likeCount": 540},
+          {"original": "La región necesita acuerdos multilaterales.", "translated": "该地区需要多边协议。", "likeCount": 580},
+          {"original": "Es una jugada geopolítica clara.", "translated": "这是一场明显的地缘政治动作。", "likeCount": 610}
+        ]
+      }
+    ],
+    "pt": [
+      {
+        "videoId": "mock-pt-1",
+        "title": "Groenlândia e o jogo do Ártico",
+        "channel": "Visão Polar",
+        "viewCount": 430000,
+        "publishedAt": "2025-10-18T00:00:00Z",
+        "comments": [
+          {"original": "Parece mais uma jogada geopolítica.", "translated": "这看起来更像地缘政治动作。", "likeCount": 680},
+          {"original": "A soberania da Groenlândia vem primeiro.", "translated": "格陵兰的主权应优先。", "likeCount": 720},
+          {"original": "O foco são rotas e recursos do Ártico.", "translated": "重点是北极航线和资源。", "likeCount": 590},
+          {"original": "A ideia de compra soa antiquada.", "translated": "“购买”的想法很过时。", "likeCount": 560},
+          {"original": "Dinamarca não vai ceder.", "translated": "丹麦不会让步。", "likeCount": 610}
+        ]
+      },
+      {
+        "videoId": "mock-pt-2",
+        "title": "Estratégia no Norte: por que a Groenlândia importa",
+        "channel": "Geopolítica Agora",
+        "viewCount": 310000,
+        "publishedAt": "2025-12-20T00:00:00Z",
+        "comments": [
+          {"original": "Cooperação faz sentido, compra não.", "translated": "合作有意义，购买不行。", "likeCount": 580},
+          {"original": "O tom da proposta foi ruim.", "translated": "提案的语气很糟。", "likeCount": 520},
+          {"original": "Os habitantes devem decidir.", "translated": "居民应当决定。", "likeCount": 640},
+          {"original": "Há muita política doméstica nisso.", "translated": "里面有很多国内政治。", "likeCount": 540},
+          {"original": "A disputa no Norte só cresce.", "translated": "北方的竞争只会加剧。", "likeCount": 600}
+        ]
+      }
+    ]
+  }
+}

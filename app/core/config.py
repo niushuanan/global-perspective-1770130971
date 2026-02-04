@@ -54,6 +54,11 @@ class Settings:
 
     http_timeout: float = float(os.getenv("HTTP_TIMEOUT", "18"))
     max_concurrency: int = int(os.getenv("MAX_CONCURRENCY", "6"))
+    force_local_comments: bool = os.getenv("FORCE_LOCAL_COMMENTS", "true").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
 
 
 settings = Settings()

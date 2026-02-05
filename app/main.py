@@ -11,7 +11,6 @@ from app.core.config import settings
 from app.core.constants import LANGUAGES
 from app.services.comment_filter import filter_comments
 from app.services.http_client import get_client
-from app.services.mock_data import load_mock_items
 from app.services.summarize import summarize_comments_local, summarize_comments_overview
 from app.services.translate import translate_text, translate_texts
 from app.services.utils import clip_text
@@ -50,9 +49,6 @@ async def analyze_video(request: QueryRequest):
     query = request.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query is required")
-
-    if settings.force_local_comments:
-        return {"query": query, "items": load_mock_items()}
 
     async with get_client() as client:
         tasks = [fetch_video_for_lang(client, lang, query) for lang in LANGUAGES]

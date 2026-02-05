@@ -19,10 +19,6 @@
 - 每个语言页可生成「本语种总结」
 - 全局可生成「跨语言总总结」
 
-### 4) 本地演示数据模式
-- 开启后无论输入什么关键词，都会返回同一份本地示例评论
-- 适合无配额或演示环境
-
 ---
 
 ## 产品体验结构
@@ -41,12 +37,11 @@
 
 ### 数据流程
 1. 输入关键词
-2. 若启用本地演示模式 → 返回本地评论
-3. 否则：多语言翻译
-4. YouTube 搜索 → 取 Top10 视频
-5. 抓取高赞评论 → 过滤
-6. 翻译成中文
-7. 按需生成总结
+2. 多语言翻译
+3. YouTube 搜索 → 取 Top10 视频
+4. 抓取高赞评论 → 过滤
+5. 翻译成中文
+6. 按需生成总结
 
 ---
 
@@ -81,7 +76,6 @@ uvicorn app.main:app --reload --port 8000
 
 可选：
 - `TRANSLATE_PROVIDER=deepseek`
-- `FORCE_LOCAL_COMMENTS=true`（默认 true，使用本地示例评论）
 
 ---
 
@@ -100,9 +94,6 @@ INVIDIOUS_INSTANCES=https://yewtu.be,https://vid.puffyan.us
 
 HTTP_TIMEOUT=18
 MAX_CONCURRENCY=6
-
-# 使用本地示例评论（默认 true）
-FORCE_LOCAL_COMMENTS=true
 ```
 
 ---

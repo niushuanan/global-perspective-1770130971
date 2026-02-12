@@ -295,7 +295,7 @@
       border-radius: 14px;
       background: var(--card);
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
       gap: 6px;
       padding: 12px;
       overflow: hidden;
@@ -365,6 +365,38 @@
       font-size: 14px;
       color: #111111;
       padding-right: 2px;
+    }
+
+    .followup-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      margin-top: 2px;
+    }
+
+    .followup-input {
+      flex: 1;
+      min-height: 32px;
+      border: 1px solid var(--line);
+      padding: 0 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .followup-input:focus {
+      border-color: #888888;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .followup-send {
+      min-height: 32px;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
     .summary-panel {
@@ -900,6 +932,102 @@
       });
     }
 
+    function normalizeMessages(input) {
+      if (Array.isArray(input)) {
+        return input
+          .filter((m) => m && m.role && typeof m.content === "string")
+          .map((m) => ({ role: m.role, content: m.content }));
+      }
+      return [{ role: "user", content: String(input || "") }];
+    }
+
+    function ensureModelThread(record, modelKey) {
+      if (!record.threads) record.threads = {};
+      if (!Array.isArray(record.threads[modelKey])) {
+        const resp = (record.responses || []).find((r) => r.modelKey === modelKey);
+        const base = [{ role: "user", content: record.query || "" }];
+        if (resp && !resp.error && resp.content) {
+          base.push({ role: "assistant", content: resp.content });
+        }
+        record.threads[modelKey] = base;
+      }
+      return record.threads[modelKey];
+    }
+
+    function renderThreadText(thread) {
+      return sanitizeModelText(
+        (thread || [])
+          .map((m) => `${m.role === "user" ? "你" : "模型"}：${m.content || ""}`)
+          .join("\n\n")
+      );
+    }
+
+    function bindFollowUpActions(record) {
+      responsesEl.querySelectorAll(".resp-card").forEach((card) => {
+        const modelKey = card.dataset.modelKey;
+        const inputEl = card.querySelector(".followup-input");
+        const sendBtn = card.querySelector(".followup-send");
+        const bodyEl = card.querySelector(".resp-body");
+        const statusEl = card.querySelector(".status");
+        if (!modelKey || !inputEl || !sendBtn || !bodyEl || !statusEl) return;
+
+        const submit = async () => {
+          const ask = inputEl.value.trim();
+          if (!ask || state.running || !record) return;
+          inputEl.value = "";
+          inputEl.disabled = true;
+          sendBtn.disabled = true;
+          statusEl.className = "status running";
+          statusEl.textContent = "追问中";
+
+          const thread = ensureModelThread(record, modelKey);
+          thread.push({ role: "user", content: ask });
+          const answer = { role: "assistant", content: "" };
+          thread.push(answer);
+          bodyEl.textContent = renderThreadText(thread);
+          bodyEl.scrollTop = bodyEl.scrollHeight;
+
+          const result = await callModel(modelKey, thread, (delta, full) => {
+            answer.content = full || delta || "";
+            bodyEl.textContent = renderThreadText(thread);
+            bodyEl.scrollTop = bodyEl.scrollHeight;
+          });
+
+          if (result.ok) {
+            answer.content = result.content || answer.content || "";
+            statusEl.className = "status ok";
+            statusEl.textContent = "完成";
+          } else {
+            answer.content = result.error || "请求失败";
+            statusEl.className = "status err";
+            statusEl.textContent = "失败";
+          }
+
+          const responseItem = (record.responses || []).find((r) => r.modelKey === modelKey);
+          if (responseItem) {
+            responseItem.content = answer.content;
+            responseItem.error = result.ok ? null : answer.content;
+            responseItem.durationMs = result.durationMs || responseItem.durationMs;
+            responseItem.finishedAt = new Date().toISOString();
+          }
+
+          bodyEl.textContent = renderThreadText(thread);
+          bodyEl.scrollTop = bodyEl.scrollHeight;
+          inputEl.disabled = false;
+          sendBtn.disabled = false;
+          saveHistory();
+        };
+
+        sendBtn.addEventListener("click", submit);
+        inputEl.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            submit();
+          }
+        });
+      });
+    }
+
     function renderModelSelector(region = "全部") {
       const renderItem = (m) => {
         const modelLabel = getModelLabel(m.key);
@@ -1039,7 +1167,7 @@
     function buildCardSkeleton(modelKey) {
       const label = getModelLabel(modelKey);
       return `
-        <div class="resp-card" id="card-${modelKey}">
+        <div class="resp-card" id="card-${modelKey}" data-model-key="${modelKey}">
           <div class="resp-head">
             <div class="resp-title">${label}</div>
             <div class="resp-tools">
@@ -1050,6 +1178,10 @@
           </div>
           <div class="mono">${label}</div>
           <div class="resp-body"></div>
+          <div class="followup-row">
+            <input class="followup-input" type="text" placeholder="继续追问这个模型..." />
+            <button class="followup-send btn-ghost" type="button">追问</button>
+          </div>
         </div>
       `;
     }
@@ -1060,8 +1192,12 @@
         const statusText = resp.error ? "失败" : "完成";
         const duration = resp.durationMs ? `${resp.durationMs} ms` : "-";
         const label = getModelLabel(resp.modelKey);
+        const thread = record.threads?.[resp.modelKey];
+        const bodyText = thread?.length
+          ? renderThreadText(thread)
+          : sanitizeModelText(resp.error ? resp.error : (resp.content || "(空响应)"));
         return `
-          <div class="resp-card">
+          <div class="resp-card" id="card-${resp.modelKey}" data-model-key="${resp.modelKey}">
             <div class="resp-head">
               <div class="resp-title">${label}</div>
               <div class="resp-tools">
@@ -1071,11 +1207,16 @@
               </div>
             </div>
             <div class="mono">${label} | ${duration}</div>
-            <div class="resp-body">${escapeHtml(sanitizeModelText(resp.error ? resp.error : (resp.content || "(空响应)")))}</div>
+            <div class="resp-body">${escapeHtml(bodyText)}</div>
+            <div class="followup-row">
+              <input class="followup-input" type="text" placeholder="继续追问这个模型..." />
+              <button class="followup-send btn-ghost" type="button">追问</button>
+            </div>
           </div>
         `;
       }).join("");
       bindCardOrderButtons();
+      bindFollowUpActions(record);
 
       if (withMeta) {
         setRunMeta(`${record.models.length} 个模型 | ${new Date(record.createdAt).toLocaleString()}`);
@@ -1294,12 +1435,14 @@
       return sanitizeModelText(provider.parse(payload) || "");
     }
 
-    async function callModel(modelKey, prompt, onStream) {
+    async function callModel(modelKey, promptOrMessages, onStream) {
       const apiKey = CONFIG.apiKeys[modelKey];
       const needFrontendKey = !["zhipu", "moonshot", "minimax"].includes(modelKey);
       const missingKey = !apiKey || /^YOUR_/i.test(apiKey);
       if (needFrontendKey && missingKey) throw new Error("未填写 API Key");
 
+      const messages = normalizeMessages(promptOrMessages);
+      const prompt = messages.map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content}`).join("\n");
       const model = CONFIG.apiModels[modelKey];
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), CONFIG.timeoutMs);
@@ -1316,21 +1459,21 @@
         openai: {
           url: "https://api.openai.com/v1/chat/completions",
           headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
-          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          body: { model, messages, temperature: 0.6 },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
         anthropic: {
           url: "https://api.anthropic.com/v1/messages",
           headers: { ...commonHeaders, "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
-          body: { model, max_tokens: 1024, messages: [{ role: "user", content: prompt }] },
+          body: { model, max_tokens: 1024, messages },
           parse: (data) => data?.content?.[0]?.text || data?.content || "",
           stream: false,
         },
         xai: {
           url: "https://api.x.ai/v1/chat/completions",
           headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
-          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          body: { model, messages, temperature: 0.6 },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
@@ -1344,7 +1487,7 @@
         moonshot: {
           url: `${CONFIG.gatewayBase}/api/moonshot/chat/completions`,
           headers: { ...commonHeaders },
-          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          body: { model, messages, temperature: 0.6 },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
@@ -1353,10 +1496,7 @@
           headers: { ...commonHeaders },
           body: {
             model,
-            messages: [
-              { role: "system", content: "你是一个有用的AI助手。" },
-              { role: "user", content: prompt },
-            ],
+            messages,
             temperature: 1.0,
           },
           parse: (data) => (data?.choices?.[0]?.message?.content || "").trim(),
@@ -1365,21 +1505,21 @@
         minimax: {
           url: `${CONFIG.gatewayBase}/api/minimax/chat/completions`,
           headers: { ...commonHeaders },
-          body: { model, messages: [{ role: "user", content: prompt }], temperature: 1.0 },
+          body: { model, messages, temperature: 1.0 },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
         qwen: {
           url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
           headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
-          body: { model, messages: [{ role: "user", content: prompt }] },
+          body: { model, messages },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
         deepseek: {
           url: "https://api.deepseek.com/v1/chat/completions",
           headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
-          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          body: { model, messages, temperature: 0.6 },
           parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
           stream: true,
         },
@@ -1646,9 +1786,16 @@
         models: selected.map((k) => getModelLabel(k)),
         modelKeys: selected,
         responses,
+        threads: {},
         summary: null,
         fusion: null,
       };
+
+      responses.forEach((resp) => {
+        const base = [{ role: "user", content: prompt }];
+        if (!resp.error && resp.content) base.push({ role: "assistant", content: resp.content });
+        record.threads[resp.modelKey] = base;
+      });
 
       state.history.unshift(record);
 
@@ -1665,6 +1812,7 @@
       state.running = false;
       runBtn.disabled = false;
       regenFusionBtn.disabled = false;
+      bindFollowUpActions(record);
 
       await appendRecordToFile(record);
     }

@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>思辨场</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f2f2f2;
+      --panel: rgba(255, 255, 255, 0.88);
+      --card: rgba(255, 255, 255, 0.96);
+      --ink: #111111;
+      --muted: #666666;
+      --line: #d0d0d0;
+      --radius: 0;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+      --accent: #111111;
+      --accent-soft: #f4f4f4;
+      --sans: "Manrope", "PingFang SC", sans-serif;
+      --mono: "JetBrains Mono", monospace;
+      --bg-image: none;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .app * { border-radius: 0 !important; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(980px 460px at 50% -110px, rgba(0, 0, 0, 0.05), transparent 70%),
+        radial-gradient(980px 360px at 52% 110%, rgba(0, 0, 0, 0.04), transparent 68%),
+        linear-gradient(180deg, #fafafa 0%, #f1f1f1 100%);
+      min-height: 100vh;
+      padding: 24px 16px 34px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      border-bottom: 1px solid rgba(193, 208, 236, 0.55);
+      padding-bottom: 8px;
+    }
+
+    .title {
+      font-size: clamp(22px, 2.8vw, 32px);
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      color: #111111;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #666666;
+      font-weight: 700;
+    }
+
+    .mono {
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 122px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 13px 14px;
+      font-size: 15px;
+      line-height: 1.62;
+      font-family: var(--sans);
+      outline: none;
+      resize: vertical;
+      background: var(--card);
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    textarea:focus {
+      border-color: #888888;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      border-radius: 999px;
+      border: 1px solid #111111;
+      background: var(--accent);
+      color: #ffffff;
+      padding: 0 14px;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 600;
+      letter-spacing: 0;
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease, border-color 150ms ease;
+      box-shadow: 0 8px 16px rgba(87, 84, 232, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: #000000;
+    }
+
+    button:disabled { opacity: 0.58; cursor: not-allowed; }
+
+    .btn-ghost {
+      color: #222222;
+      background: #ffffff;
+      border-color: #cfcfcf;
+      box-shadow: none;
+    }
+
+    .model-filter {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid #cfcfcf;
+      background: #fff;
+      color: #222222;
+      box-shadow: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .filter-btn.active {
+      border-color: #111111;
+      background: #111111;
+      color: #fff;
+    }
+
+    .model-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .model-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      min-height: 56px;
+      padding: 8px 12px;
+      background: var(--card);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+    }
+
+    .model-item:hover {
+      border-color: #999999;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .model-check {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #a8a8a8;
+      border-radius: 4px;
+      background: #ffffff;
+      display: inline-grid;
+      place-content: center;
+      cursor: pointer;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+
+    .model-check::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      transform: scale(0);
+      transition: transform 120ms ease;
+      background: #ffffff;
+      clip-path: polygon(14% 53%, 0 66%, 40% 100%, 100% 24%, 86% 11%, 39% 70%);
+    }
+
+    .model-check:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .model-check:checked::after {
+      transform: scale(1);
+    }
+
+    .model-name { font-weight: 600; font-size: 16px; color: #111111; }
+
+    .split { display: grid; gap: 12px; }
+
+    .answers-panel {
+      display: grid;
+      gap: 10px;
+    }
+
+    .response-row {
+      height: clamp(460px, 68vh, 760px);
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      padding-bottom: 2px;
+      align-items: stretch;
+    }
+
+    .response-row::-webkit-scrollbar,
+    .resp-body::-webkit-scrollbar,
+    .history-list::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .response-row::-webkit-scrollbar-thumb,
+    .resp-body::-webkit-scrollbar-thumb,
+    .history-list::-webkit-scrollbar-thumb {
+      background: #b0b0b0;
+      border-radius: 999px;
+    }
+
+    .resp-card {
+      width: clamp(340px, 36vw, 460px);
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 6px;
+      padding: 12px;
+      overflow: hidden;
+      contain: layout paint;
+    }
+
+    .resp-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .resp-tools {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .order-btn {
+      border: 1px solid #d0d0d0;
+      background: #f7f7f7;
+      color: var(--ink);
+      border-radius: 999px;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      line-height: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    .order-btn:hover {
+      transform: none;
+      border-color: #999999;
+      background: #ededed;
+    }
+
+    .resp-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .status {
+      font-size: 12px;
+      border: 1px solid #d0d0d0;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: var(--muted);
+      font-family: var(--mono);
+      background: #f7f7f7;
+    }
+
+    .status.running { border-color: #c8c8c8; color: #444444; background: #f2f2f2; }
+    .status.ok { border-color: #bdbdbd; color: #222222; background: #efefef; }
+    .status.err { border-color: #bdbdbd; color: #222222; background: #efefef; }
+
+    .resp-body {
+      min-height: 0;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.72;
+      font-size: 14px;
+      color: #111111;
+      padding-right: 2px;
+    }
+
+    .summary-panel {
+      display: none;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 10px 12px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
+      min-height: 180px;
+    }
+
+    .summary-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mini-btn {
+      min-height: 28px;
+      padding: 0 10px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .summary-title {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #666666;
+      font-weight: 700;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 8px;
+      max-height: 300px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .history-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 8px 9px;
+      display: grid;
+      gap: 3px;
+      cursor: pointer;
+      transition: border-color 140ms ease;
+    }
+
+    .history-item:hover { border-color: #999999; }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-item .time {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .history-item .question {
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .history-del {
+      border: 1px solid #cfcfcf;
+      background: #f6f6f6;
+      color: var(--muted);
+      border-radius: 999px;
+      box-shadow: none;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+      min-width: 48px;
+    }
+
+    .history-del:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: #999999;
+      color: #222222;
+      background: #ededed;
+    }
+
+    .history-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 10px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .search-row input {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      min-height: 36px;
+      padding: 0 12px;
+      background: var(--card);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-row input:focus {
+      border-color: #888888;
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+    }
+
+    details.secondary {
+      border: 1px dashed #c8c8c8;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(247, 250, 255, 0.9);
+    }
+
+    details.secondary summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    details.secondary summary::-webkit-details-marker { display: none; }
+
+    .file-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .rank-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .rank-head {
+      display: grid;
+      gap: 6px;
+    }
+
+    .rank-title {
+      font-size: 34px;
+      font-weight: 700;
+      color: #111111;
+      letter-spacing: -0.02em;
+    }
+
+    .rank-sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .rank-board {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 14px 14px 12px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .rank-note {
+      color: #555555;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .rank-legend {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: #555555;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border: 1px solid #777;
+      display: inline-block;
+    }
+
+    .legend-dot.us { background: #1a1a1a; }
+    .legend-dot.cn { background: #8f8f8f; }
+
+    .rank-bars {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(78px, 1fr));
+      gap: 10px;
+      align-items: end;
+      min-height: 250px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .rank-col {
+      min-width: 78px;
+      display: grid;
+      justify-items: center;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .rank-bar {
+      width: 36px;
+      border-radius: 10px 10px 6px 6px;
+      background: linear-gradient(180deg, #3a3a3a 0%, #111111 100%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      padding-bottom: 6px;
+    }
+
+    .rank-bar.us {
+      background: linear-gradient(180deg, #242424 0%, #0d0d0d 100%);
+    }
+
+    .rank-bar.cn {
+      background: linear-gradient(180deg, #9a9a9a 0%, #616161 100%);
+    }
+
+    .rank-name {
+      font-size: 12px;
+      line-height: 1.3;
+      text-align: center;
+      color: #333333;
+      min-height: 34px;
+      display: grid;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .response-row { height: min(60vh, 620px); }
+      .resp-card { width: min(84vw, 430px); }
+      .rank-bars { grid-template-columns: repeat(9, minmax(92px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">思辨场</div>
+    </header>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>Prompt</h2>
+        <div class="actions">
+          <button id="runBtn">提交</button>
+          <button id="exampleBtn" class="btn-ghost">示例</button>
+          <button id="clearBtn" class="btn-ghost">清空</button>
+        </div>
+      </div>
+      <textarea id="questionInput" placeholder="例如：写一篇 600 字左右的科幻短篇小说，包含一个意外转折，风格冷峻。"></textarea>
+      <div class="mono">回车换行，Command+回车发送</div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>模型</h2>
+        <button id="selectAllBtn" class="btn-ghost">全选/全不选</button>
+      </div>
+      <div id="modelFilter" class="model-filter"></div>
+      <div id="modelGrid" class="model-list"></div>
+    </section>
+
+    <div class="split">
+      <section class="panel answers-panel">
+        <div class="section-head">
+          <h2>回答</h2>
+          <div class="mono" id="runMeta">等待</div>
+        </div>
+        <div id="responses" class="response-row"></div>
+        <div id="summaryPanel" class="summary-panel">
+          <div class="summary-card">
+            <div class="summary-title">差异总结</div>
+            <div id="summaryContent" class="resp-body"></div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-head">
+              <div class="summary-title">最佳答案融合</div>
+              <button id="regenFusionBtn" class="btn-ghost mini-btn" type="button">重新生成</button>
+            </div>
+            <div id="fusionContent" class="resp-body"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>记录</h2>
+        <div class="search-row">
+          <input id="searchHistory" type="search" placeholder="搜索" />
+          <button id="clearHistory" class="btn-ghost">Clear</button>
+        </div>
+      </div>
+      <div id="historyList" class="history-list"></div>
+
+      <details class="secondary">
+        <summary>存储与背景</summary>
+        <div class="file-row">
+          <span id="fileStatus" class="mono">文件：未绑定</span>
+          <button id="bindFileBtn" class="btn-ghost">绑定</button>
+          <button id="exportBtn" class="btn-ghost">导出</button>
+        </div>
+        <div class="file-row">
+          <span id="bgStatus" class="mono">背景：默认</span>
+          <button id="setBgBtn" class="btn-ghost">设置背景</button>
+          <button id="clearBgBtn" class="btn-ghost">清除背景</button>
+          <input id="bgInput" type="file" accept="image/*" style="display:none;" />
+        </div>
+      </details>
+    </section>
+
+    <section class="panel rank-panel">
+      <div class="rank-head">
+        <div class="rank-title">模型能力榜</div>
+        <div class="rank-sub">指数排名基于第三方独立测评 Artificial Analysis。</div>
+      </div>
+      <div class="rank-board">
+        <div class="summary-title">Artificial Analysis Intelligence Index</div>
+        <div class="rank-legend">
+          <span class="legend-item"><span class="legend-dot us"></span>美国模型</span>
+          <span class="legend-item"><span class="legend-dot cn"></span>中国模型</span>
+        </div>
+        <div id="rankBars" class="rank-bars"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const CONFIG = {
+      timeoutMs: 90000,
+      gatewayBase: "http://127.0.0.1:8787",
+      apiKeys: {
+        openai: "YOUR_OPENAI_KEY",
+        anthropic: "YOUR_ANTHROPIC_KEY",
+        xai: "YOUR_XAI_KEY",
+        gemini: "YOUR_GOOGLE_KEY",
+        moonshot: "USE_PY_GATEWAY",
+        zhipu: "USE_PY_GATEWAY",
+        minimax: "YOUR_MINIMAX_KEY",
+        qwen: "YOUR_QWEN_KEY",
+        deepseek: "YOUR_DEEPSEEK_KEY",
+      },
+      apiModels: {
+        openai: "gpt-5.2",
+        anthropic: "claude4.6-opus",
+        xai: "grok4",
+        gemini: "gemini-3.0-pro",
+        moonshot: "kimi-2.5-thinking",
+        zhipu: "glm-5",
+        minimax: "minimax-2.5",
+        qwen: "qwen3-max",
+        deepseek: "deepseek-chat",
+      },
+      displayModels: {
+        openai: "GPT-5.2（xhigh）",
+        anthropic: "claude opus4.6",
+        xai: "Grok 4",
+        gemini: "Gemini 3 Pro",
+        moonshot: "kimi K2.5",
+        zhipu: "GLM-5",
+        minimax: "Minimax-M2.5",
+        qwen: "Qwen3 MaxThinking",
+        deepseek: "DeepSeekV3.2",
+      },
+    };
+
+    const RANKING_DATA = [
+      { name: "claude opus4.6", score: 53, region: "美国" },
+      { name: "GPT-5.2（xhigh）", score: 51, region: "美国" },
+      { name: "GLM-5", score: 50, region: "CN" },
+      { name: "Gemini 3 Pro", score: 48, region: "美国" },
+      { name: "kimi K2.5", score: 47, region: "CN" },
+      { name: "Minimax-M2.5", score: 47, region: "CN" },
+      { name: "DeepSeekV3.2", score: 42, region: "CN" },
+      { name: "Grok 4", score: 41, region: "美国" },
+      { name: "Qwen3 MaxThinking", score: 40, region: "CN" },
+    ];
+
+    const MODEL_REGISTRY = [
+      { key: "openai", region: "美国" },
+      { key: "anthropic", region: "美国" },
+      { key: "xai", region: "美国" },
+      { key: "gemini", region: "美国" },
+      { key: "moonshot", region: "中国" },
+      { key: "zhipu", region: "中国" },
+      { key: "minimax", region: "中国" },
+      { key: "qwen", region: "中国" },
+      { key: "deepseek", region: "中国" },
+    ];
+
+    const STORAGE_KEY = "multiqa_history_v1";
+    const FILE_DB = "multiqa_file_db";
+    const FILE_STORE = "handles";
+    const BG_KEY = "multiqa_background_v1";
+
+    const state = { history: [], running: false, currentRecord: null, fileHandle: null };
+
+    const questionInput = document.getElementById("questionInput");
+    const runBtn = document.getElementById("runBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const exampleBtn = document.getElementById("exampleBtn");
+    const modelGrid = document.getElementById("modelGrid");
+    const modelFilter = document.getElementById("modelFilter");
+    const responsesEl = document.getElementById("responses");
+    const runMetaEl = document.getElementById("runMeta");
+    const historyListEl = document.getElementById("historyList");
+    const searchHistoryEl = document.getElementById("searchHistory");
+    const clearHistoryBtn = document.getElementById("clearHistory");
+    const selectAllBtn = document.getElementById("selectAllBtn");
+    const fileStatusEl = document.getElementById("fileStatus");
+    const bindFileBtn = document.getElementById("bindFileBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const bgStatusEl = document.getElementById("bgStatus");
+    const setBgBtn = document.getElementById("setBgBtn");
+    const clearBgBtn = document.getElementById("clearBgBtn");
+    const bgInput = document.getElementById("bgInput");
+    const summaryPanelEl = document.getElementById("summaryPanel");
+    const summaryContentEl = document.getElementById("summaryContent");
+    const fusionContentEl = document.getElementById("fusionContent");
+    const regenFusionBtn = document.getElementById("regenFusionBtn");
+    const rankBarsEl = document.getElementById("rankBars");
+
+    function escapeHtml(text) {
+      return (text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function sanitizeModelText(text) {
+      return (text || "").replace(/[*#]/g, "");
+    }
+
+    function applyBackground(dataUrl) {
+      const safe = dataUrl ? `url("${dataUrl}")` : "none";
+      document.documentElement.style.setProperty("--bg-image", safe);
+      bgStatusEl.textContent = dataUrl ? "背景：已设置" : "背景：默认";
+    }
+
+    function loadBackground() {
+      try {
+        const saved = localStorage.getItem(BG_KEY);
+        applyBackground(saved);
+      } catch (error) {
+        applyBackground("");
+      }
+    }
+
+    function setBackground(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = String(reader.result || "");
+        try {
+          localStorage.setItem(BG_KEY, dataUrl);
+          applyBackground(dataUrl);
+         } catch (error) {
+          bgStatusEl.textContent = "背景：保存失败";
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearBackground() {
+      localStorage.removeItem(BG_KEY);
+      applyBackground("");
+      bgInput.value = "";
+    }
+
+    function getModelLabel(modelKey) {
+      return CONFIG.displayModels[modelKey] || CONFIG.apiModels[modelKey] || modelKey;
+    }
+
+    function bindCardOrderButtons() {
+      responsesEl.querySelectorAll(".order-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const card = button.closest(".resp-card");
+          if (!card) return;
+          if (button.dataset.move === "left" && card.previousElementSibling) {
+            responsesEl.insertBefore(card, card.previousElementSibling);
+          }
+          if (button.dataset.move === "right" && card.nextElementSibling) {
+            responsesEl.insertBefore(card.nextElementSibling, card);
+          }
+        });
+      });
+    }
+
+    function renderModelSelector(region = "全部") {
+      const renderItem = (m) => {
+        const modelLabel = getModelLabel(m.key);
+        return `
+          <label class="model-item">
+            <input class="model-check" type="checkbox" name="model" value="${m.key}">
+            <div>
+              <div class="model-name">${modelLabel}</div>
+            </div>
+          </label>
+        `;
+      };
+
+      const filters = ["全部", "中国", "美国"];
+      const current = filters.includes(region) ? region : "全部";
+
+      modelFilter.innerHTML = filters.map((name) => `
+        <button type="button" class="filter-btn ${name === current ? "active" : ""}" data-region="${name}">${name}</button>
+      `).join("");
+
+      const list = current === "全部"
+        ? MODEL_REGISTRY
+        : MODEL_REGISTRY.filter((m) => m.region === current);
+      modelGrid.innerHTML = list.map(renderItem).join("");
+
+      modelFilter.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const selected = btn.dataset.region || "全部";
+          const checked = new Set(
+            Array.from(document.querySelectorAll("input[name='model']:checked")).map((el) => el.value)
+          );
+          renderModelSelector(selected);
+          document.querySelectorAll("input[name='model']").forEach((box) => {
+            box.checked = checked.has(box.value);
+          });
+        });
+      });
+    }
+
+    function renderRanking() {
+      const maxScore = Math.max(...RANKING_DATA.map((d) => d.score), 1);
+      rankBarsEl.innerHTML = RANKING_DATA.map((item) => {
+        const height = Math.max(78, Math.round((item.score / maxScore) * 180));
+        const cls = item.region === "CN" ? "cn" : "us";
+        return `
+          <div class="rank-col">
+            <div class="rank-bar ${cls}" style="height:${height}px;">${item.score}</div>
+            <div class="rank-name">${escapeHtml(item.name)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        state.history = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        state.history = [];
+      }
+      renderHistory(state.history);
+    }
+
+    function saveHistory() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.history.slice(0, 200)));
+    }
+
+    function renderHistory(list) {
+      if (!list.length) {
+        historyListEl.innerHTML = '<div class="history-empty">暂无</div>';
+        return;
+      }
+      historyListEl.innerHTML = list.map((item) => {
+        const time = new Date(item.createdAt).toLocaleString();
+        const preview = (item.query || "").slice(0, 70);
+        const badge = Array.isArray(item.models)
+          ? item.models.join(", ")
+          : (item.modelKeys || []).map((key) => getModelLabel(key)).join(", ");
+        return `
+          <div class="history-item" data-id="${item.id}">
+            <div class="history-top">
+              <div class="time">${time}</div>
+              <button class="history-del" data-del-id="${item.id}" type="button">删除</button>
+            </div>
+            <div class="question">${escapeHtml(preview)}</div>
+            <div class="mono">${badge}</div>
+          </div>
+        `;
+      }).join("");
+
+      historyListEl.querySelectorAll(".history-item").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.dataset.id;
+          const record = state.history.find((h) => h.id === id);
+          if (!record) return;
+          state.currentRecord = record;
+          questionInput.value = record.query;
+          renderRecord(record, false);
+          renderSummaryFromSaved(record.summary || null);
+          renderFusionFromSaved(record.fusion || null);
+        });
+      });
+
+      historyListEl.querySelectorAll(".history-del").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const id = btn.dataset.delId;
+          deleteHistoryRecord(id);
+        });
+      });
+    }
+
+    function deleteHistoryRecord(id) {
+      if (!id) return;
+      state.history = state.history.filter((item) => item.id !== id);
+      if (state.currentRecord?.id === id) {
+        clearResponses();
+      }
+      saveHistory();
+      filterHistory(searchHistoryEl.value.trim());
+    }
+
+    function filterHistory(keyword) {
+      if (!keyword) return renderHistory(state.history);
+      const lower = keyword.toLowerCase();
+      const filtered = state.history.filter((item) =>
+        item.query.toLowerCase().includes(lower) ||
+        (item.responses || []).some((r) => (r.content || "").toLowerCase().includes(lower))
+      );
+      renderHistory(filtered);
+    }
+
+    function setRunMeta(text) {
+      runMetaEl.textContent = text;
+    }
+
+    function buildCardSkeleton(modelKey) {
+      const label = getModelLabel(modelKey);
+      return `
+        <div class="resp-card" id="card-${modelKey}">
+          <div class="resp-head">
+            <div class="resp-title">${label}</div>
+            <div class="resp-tools">
+              <button class="order-btn" data-move="left" title="左移">←</button>
+              <button class="order-btn" data-move="right" title="右移">→</button>
+              <div class="status running">请求中</div>
+            </div>
+          </div>
+          <div class="mono">${label}</div>
+          <div class="resp-body"></div>
+        </div>
+      `;
+    }
+
+    function renderRecord(record, withMeta = true) {
+      responsesEl.innerHTML = (record.responses || []).map((resp) => {
+        const statusClass = resp.error ? "err" : "ok";
+        const statusText = resp.error ? "失败" : "完成";
+        const duration = resp.durationMs ? `${resp.durationMs} ms` : "-";
+        const label = getModelLabel(resp.modelKey);
+        return `
+          <div class="resp-card">
+            <div class="resp-head">
+              <div class="resp-title">${label}</div>
+              <div class="resp-tools">
+                <button class="order-btn" data-move="left" title="左移">←</button>
+                <button class="order-btn" data-move="right" title="右移">→</button>
+                <div class="status ${statusClass}">${statusText}</div>
+              </div>
+            </div>
+            <div class="mono">${label} | ${duration}</div>
+            <div class="resp-body">${escapeHtml(sanitizeModelText(resp.error ? resp.error : (resp.content || "(空响应)")))}</div>
+          </div>
+        `;
+      }).join("");
+      bindCardOrderButtons();
+
+      if (withMeta) {
+        setRunMeta(`${record.models.length} 个模型 | ${new Date(record.createdAt).toLocaleString()}`);
+      }
+    }
+
+    function normalizeError(error) {
+      if (!error) return "请求失败";
+      if (error.name === "AbortError") return "请求超时";
+      if (String(error.message).includes("Failed to fetch")) return "网络或 CORS 被阻止";
+      return error.message || "请求失败";
+    }
+
+    function getDeltaFromChunk(chunk) {
+      const choice = chunk?.choices?.[0];
+      return (
+        choice?.delta?.content ||
+        choice?.message?.content ||
+        choice?.text ||
+        ""
+      );
+    }
+
+    function createStreamRenderer(el) {
+      el.textContent = "";
+      const node = document.createTextNode("");
+      el.appendChild(node);
+
+      let fullText = "";
+      let renderBuffer = "";
+      let deltaBuffer = "";
+      let frameId = 0;
+      let timerId = 0;
+
+      const shouldFlushNow = (text) => {
+        if (!text) return false;
+        if (text.length >= 8) return true;
+        return /[，。！？；：、\n\r ]$/.test(text);
+      };
+
+      const flush = () => {
+        frameId = 0;
+        if (!renderBuffer) return;
+        node.appendData(renderBuffer);
+        renderBuffer = "";
+      };
+
+      const scheduleFlush = () => {
+        if (!frameId) frameId = requestAnimationFrame(flush);
+      };
+
+      return {
+        push(delta) {
+          if (!delta) return;
+          const safe = sanitizeModelText(delta);
+          if (!safe) return;
+          fullText += safe;
+          deltaBuffer += safe;
+
+          if (shouldFlushNow(deltaBuffer)) {
+            renderBuffer += deltaBuffer;
+            deltaBuffer = "";
+            scheduleFlush();
+            if (timerId) {
+              clearTimeout(timerId);
+              timerId = 0;
+            }
+            return;
+          }
+
+          if (!timerId) {
+            timerId = setTimeout(() => {
+              timerId = 0;
+              if (!deltaBuffer) return;
+              renderBuffer += deltaBuffer;
+              deltaBuffer = "";
+              scheduleFlush();
+            }, 36);
+          }
+        },
+        set(text) {
+          if (frameId) cancelAnimationFrame(frameId);
+          if (timerId) clearTimeout(timerId);
+          frameId = 0;
+          timerId = 0;
+          fullText = sanitizeModelText(text || "");
+          renderBuffer = "";
+          deltaBuffer = "";
+          node.data = fullText;
+        },
+        get() {
+          return fullText;
+        },
+      };
+    }
+
+    function parseSSEText(raw, provider) {
+      let merged = "";
+      let finalText = "";
+      const lines = raw.split(/\r?\n/);
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data:")) continue;
+        const data = trimmed.slice(5).trim();
+        if (!data || data === "[DONE]") continue;
+        try {
+          const json = JSON.parse(data);
+          const delta = getDeltaFromChunk(json);
+          if (delta) merged += delta;
+          const parsed = provider.parse(json);
+          if (parsed) finalText = parsed;
+        } catch (e) {
+          continue;
+        }
+      }
+      return sanitizeModelText(merged || finalText || "");
+    }
+
+    async function streamSSE(provider, onDelta) {
+      const res = await fetch(provider.url, {
+        method: "POST",
+        headers: provider.headers,
+        body: JSON.stringify({ ...provider.body, stream: true }),
+        signal: provider.signal,
+      });
+
+      if (!res.ok) {
+        let payload = null;
+        let text = "";
+        try { payload = await res.json(); } catch (e) { payload = null; }
+        if (!payload) {
+          try { text = await res.text(); } catch (e) { text = ""; }
+        }
+        const message = payload?.error?.message || payload?.message || text || `HTTP ${res.status}`;
+        throw new Error(message);
+      }
+
+      if (!res.body) {
+        const payload = await res.json();
+        return sanitizeModelText(provider.parse(payload) || "");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let lineBuffer = "";
+      let raw = "";
+      let content = "";
+      let hasDelta = false;
+
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          raw += chunk;
+          lineBuffer += chunk;
+
+          const lines = lineBuffer.split(/\r?\n/);
+          lineBuffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const data = trimmed.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+            try {
+              const json = JSON.parse(data);
+              const delta = getDeltaFromChunk(json);
+              if (delta) {
+                hasDelta = true;
+                content += delta;
+                onDelta(delta, content);
+              }
+            } catch (e) {
+              continue;
+            }
+          }
+        }
+      } catch (error) {
+        if (hasDelta && (error?.name === "AbortError" || /aborted/i.test(String(error?.message || "")))) {
+          return content;
+        }
+        throw error;
+      }
+
+      if (hasDelta) return content;
+
+      const parsed = parseSSEText(raw, provider);
+      if (parsed) {
+        onDelta(parsed, parsed);
+        return parsed;
+      }
+
+      try {
+        const json = JSON.parse(raw.trim());
+        return provider.parse(json) || "";
+      } catch (e) {
+        return "";
+      }
+    }
+
+    async function fetchJsonCompletion(provider, signal) {
+      const res = await fetch(provider.url, {
+        method: "POST",
+        headers: provider.headers,
+        body: JSON.stringify({ ...provider.body, stream: false }),
+        signal,
+      });
+
+      let payload = null;
+      try { payload = await res.json(); } catch (e) { payload = null; }
+      if (!res.ok) {
+        const message = payload?.error?.message || payload?.message || `HTTP ${res.status}`;
+        throw new Error(message);
+      }
+      return sanitizeModelText(provider.parse(payload) || "");
+    }
+
+    async function callModel(modelKey, prompt, onStream) {
+      const apiKey = CONFIG.apiKeys[modelKey];
+      const needFrontendKey = !["zhipu", "moonshot", "minimax"].includes(modelKey);
+      if (needFrontendKey && !apiKey) throw new Error("未填写 API Key");
+
+      const model = CONFIG.apiModels[modelKey];
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), CONFIG.timeoutMs);
+      const started = performance.now();
+      const commonHeaders = { "Content-Type": "application/json" };
+      const maxAttempts = ["zhipu", "moonshot"].includes(modelKey) ? 3 : (modelKey === "deepseek" ? 2 : 1);
+
+      function shouldRetry(message) {
+        if (!message) return false;
+        return /HTTP 5\d\d|timeout|超时|temporar|network|CORS|429|rate limit|busy/i.test(String(message));
+      }
+
+      const providers = {
+        openai: {
+          url: "https://api.openai.com/v1/chat/completions",
+          headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
+          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+        anthropic: {
+          url: "https://api.anthropic.com/v1/messages",
+          headers: { ...commonHeaders, "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+          body: { model, max_tokens: 1024, messages: [{ role: "user", content: prompt }] },
+          parse: (data) => data?.content?.[0]?.text || data?.content || "",
+          stream: false,
+        },
+        xai: {
+          url: "https://api.x.ai/v1/chat/completions",
+          headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
+          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+        gemini: {
+          url: `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          headers: { ...commonHeaders },
+          body: { contents: [{ parts: [{ text: prompt }] }] },
+          parse: (data) => data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join("\n") || "",
+          stream: false,
+        },
+        moonshot: {
+          url: `${CONFIG.gatewayBase}/api/moonshot/chat/completions`,
+          headers: { ...commonHeaders },
+          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+        zhipu: {
+          url: `${CONFIG.gatewayBase}/api/zhipu/chat/completions`,
+          headers: { ...commonHeaders },
+          body: {
+            model,
+            messages: [
+              { role: "system", content: "你是一个有用的AI助手。" },
+              { role: "user", content: prompt },
+            ],
+            temperature: 1.0,
+          },
+          parse: (data) => (data?.choices?.[0]?.message?.content || "").trim(),
+          stream: true,
+        },
+        minimax: {
+          url: `${CONFIG.gatewayBase}/api/minimax/chat/completions`,
+          headers: { ...commonHeaders },
+          body: { model, messages: [{ role: "user", content: prompt }], temperature: 1.0 },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+        qwen: {
+          url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+          headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
+          body: { model, messages: [{ role: "user", content: prompt }] },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+        deepseek: {
+          url: "https://api.deepseek.com/v1/chat/completions",
+          headers: { ...commonHeaders, Authorization: `Bearer ${apiKey}` },
+          body: { model, messages: [{ role: "user", content: prompt }], temperature: 0.6 },
+          parse: (data) => data?.choices?.[0]?.message?.content?.trim(),
+          stream: true,
+        },
+      };
+
+      const provider = providers[modelKey];
+      if (!provider) throw new Error("未支持的模型");
+      provider.signal = controller.signal;
+
+      try {
+        for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+          try {
+            if (provider.stream && typeof onStream === "function") {
+              const streamContent = await streamSSE(provider, onStream);
+              if (streamContent) {
+                return {
+                  ok: true,
+                  content: sanitizeModelText(streamContent),
+                  durationMs: Math.round(performance.now() - started),
+                  modelName: model,
+                };
+              }
+              const fallbackContent = await fetchJsonCompletion(provider, controller.signal);
+              if (fallbackContent) onStream(fallbackContent, fallbackContent);
+              return {
+                ok: true,
+                content: sanitizeModelText(fallbackContent),
+                durationMs: Math.round(performance.now() - started),
+                modelName: model,
+              };
+            }
+
+            const content = await fetchJsonCompletion(provider, controller.signal);
+            return {
+              ok: true,
+              content: sanitizeModelText(content),
+              durationMs: Math.round(performance.now() - started),
+              modelName: model,
+            };
+          } catch (error) {
+            const message = normalizeError(error);
+            if (attempt < maxAttempts && shouldRetry(message)) {
+              await new Promise((resolve) => setTimeout(resolve, 420));
+              continue;
+            }
+            throw new Error(message);
+          }
+        }
+
+        throw new Error("请求失败");
+      } catch (error) {
+        return {
+          ok: false,
+          error: normalizeError(error),
+          durationMs: Math.round(performance.now() - started),
+          modelName: model,
+        };
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function renderSummaryFromText(text) {
+      summaryContentEl.textContent = sanitizeModelText(text || "").trim() || "生成中...";
+    }
+
+    function renderFusionFromText(text) {
+      fusionContentEl.textContent = sanitizeModelText(text || "").trim() || "生成中...";
+    }
+
+    function renderSummaryFromSaved(summaryText) {
+      if (!summaryText) {
+        summaryPanelEl.style.display = "none";
+        return;
+      }
+      summaryPanelEl.style.display = "grid";
+      if (typeof summaryText === "object") {
+        const legacy = summaryText.diff || summaryText.raw || "";
+        renderSummaryFromText(legacy);
+        return;
+      }
+      renderSummaryFromText(summaryText);
+    }
+
+    function renderFusionFromSaved(fusionText) {
+      if (!fusionText) {
+        renderFusionFromText("");
+        return;
+      }
+      summaryPanelEl.style.display = "grid";
+      renderFusionFromText(fusionText);
+    }
+
+    async function runComparisonSummary(record) {
+      summaryPanelEl.style.display = "grid";
+      renderSummaryFromText("生成中...");
+
+      if (!CONFIG.apiKeys.deepseek) {
+        renderSummaryFromText("缺少 DeepSeek Key");
+        return "缺少 DeepSeek Key";
+      }
+
+      const promptLines = [
+        "你是严谨的对比分析助手。",
+        "请基于以下多模型回答，生成一段差异总结，强调风格、结构、信息密度和完成度差异。",
+        "只输出纯文本，不要使用星号，不要使用井号，不要用列表标记。",
+        "问题：" + record.query,
+        "回答：",
+      ];
+
+      record.responses.forEach((resp) => {
+        const label = CONFIG.displayModels[resp.modelKey] || CONFIG.apiModels[resp.modelKey] || resp.modelKey;
+        promptLines.push(`【${label}】`);
+        promptLines.push(resp.content || resp.error || "");
+      });
+
+      let raw = "";
+      const result = await callModel("deepseek", promptLines.join("\n"), (delta, full) => {
+        raw = full;
+        renderSummaryFromText(raw);
+      });
+
+      if (!result.ok) {
+        renderSummaryFromText(result.error || "生成失败");
+        return result.error || "生成失败";
+      }
+
+      raw = sanitizeModelText(raw || result.content || "");
+      renderSummaryFromText(raw);
+      return raw || "-";
+    }
+
+    async function runBestFusion(record) {
+      summaryPanelEl.style.display = "grid";
+      renderFusionFromText("生成中...");
+
+      if (!CONFIG.apiKeys.qwen) {
+        renderFusionFromText("缺少 Qwen Key");
+        return "缺少 Qwen Key";
+      }
+
+      const promptLines = [
+        "你是资深编辑与答案整合助手。",
+        "请融合以下多个答案，生成一个最终版。",
+        "要求：结构清晰，可直接执行，避免重复，补齐遗漏，保留关键信息。",
+        "输出限制：只输出最终答案正文，不要解释过程，不要提及模型，不要出现星号和井号。",
+        "用户问题：" + record.query,
+        "候选答案：",
+      ];
+
+      record.responses.forEach((resp) => {
+        const label = CONFIG.displayModels[resp.modelKey] || CONFIG.apiModels[resp.modelKey] || resp.modelKey;
+        promptLines.push(`【${label}】`);
+        promptLines.push(resp.content || resp.error || "");
+      });
+
+      let raw = "";
+      const result = await callModel("qwen", promptLines.join("\n"), (delta, full) => {
+        raw = full;
+        renderFusionFromText(raw);
+      });
+
+      if (!result.ok) {
+        renderFusionFromText(result.error || "生成失败");
+        return result.error || "生成失败";
+      }
+
+      raw = sanitizeModelText(raw || result.content || "");
+      renderFusionFromText(raw);
+      return raw || "-";
+    }
+
+    async function regenerateFusion() {
+      if (state.running || !state.currentRecord) return;
+      regenFusionBtn.disabled = true;
+      const fusion = await runBestFusion(state.currentRecord);
+      state.currentRecord.fusion = fusion;
+      const idx = state.history.findIndex((item) => item.id === state.currentRecord.id);
+      if (idx >= 0) state.history[idx].fusion = fusion;
+      saveHistory();
+      regenFusionBtn.disabled = false;
+    }
+
+    async function runQuery() {
+      const prompt = questionInput.value.trim();
+      if (!prompt) {
+        questionInput.focus();
+        return;
+      }
+
+      const selected = Array.from(document.querySelectorAll("input[name='model']:checked")).map((el) => el.value);
+      if (!selected.length) {
+        alert("请至少选择一个模型");
+        return;
+      }
+
+      state.running = true;
+      runBtn.disabled = true;
+      regenFusionBtn.disabled = true;
+      setRunMeta(`执行中 | ${selected.length} 个模型`);
+      responsesEl.innerHTML = selected.map((modelKey) => buildCardSkeleton(modelKey)).join("");
+      bindCardOrderButtons();
+      summaryPanelEl.style.display = "none";
+      renderFusionFromText("");
+
+      const tasks = selected.map(async (modelKey) => {
+        try {
+          const card = document.getElementById(`card-${modelKey}`);
+          const bodyEl = card.querySelector(".resp-body");
+          const statusEl = card.querySelector(".status");
+          const metaEl = card.querySelector(".mono");
+          const renderer = createStreamRenderer(bodyEl);
+
+          const result = await callModel(modelKey, prompt, (delta) => renderer.push(delta));
+          const label = getModelLabel(modelKey);
+          metaEl.textContent = `${label} | ${result.durationMs} ms`;
+
+          if (result.ok) {
+            statusEl.className = "status ok";
+            statusEl.textContent = "完成";
+            if (!renderer.get()) renderer.set(result.content || "(空响应)");
+          } else {
+            statusEl.className = "status err";
+            statusEl.textContent = "失败";
+            renderer.set(result.error || "请求失败");
+          }
+
+          return {
+            modelKey,
+            modelName: result.modelName,
+            content: result.content || renderer.get(),
+            error: result.ok ? null : result.error,
+            durationMs: result.durationMs,
+            finishedAt: new Date().toISOString(),
+          };
+        } catch (error) {
+          return {
+            modelKey,
+            modelName: getModelLabel(modelKey),
+            content: "",
+            error: normalizeError(error),
+            durationMs: 0,
+            finishedAt: new Date().toISOString(),
+          };
+        }
+      });
+
+      const settled = await Promise.allSettled(tasks);
+      const responses = settled.map((item, index) => {
+        if (item.status === "fulfilled") return item.value;
+        return {
+          modelKey: selected[index],
+          modelName: getModelLabel(selected[index]),
+          content: "",
+          error: normalizeError(item.reason),
+          durationMs: 0,
+          finishedAt: new Date().toISOString(),
+        };
+      });
+      const record = {
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        createdAt: new Date().toISOString(),
+        query: prompt,
+        models: selected.map((k) => getModelLabel(k)),
+        modelKeys: selected,
+        responses,
+        summary: null,
+        fusion: null,
+      };
+
+      state.history.unshift(record);
+
+      const summary = await runComparisonSummary(record);
+      record.summary = summary;
+      const fusion = await runBestFusion(record);
+      record.fusion = fusion;
+
+      saveHistory();
+      renderHistory(state.history);
+
+      state.currentRecord = record;
+      setRunMeta(`${selected.length} 个模型 | ${new Date(record.createdAt).toLocaleString()}`);
+      state.running = false;
+      runBtn.disabled = false;
+      regenFusionBtn.disabled = false;
+
+      await appendRecordToFile(record);
+    }
+
+    function clearResponses() {
+      responsesEl.innerHTML = "";
+      summaryPanelEl.style.display = "none";
+      renderFusionFromText("");
+      regenFusionBtn.disabled = false;
+      setRunMeta("等待");
+      state.currentRecord = null;
+    }
+
+    function clearHistory() {
+      if (!confirm("确认清空所有本地记录？")) return;
+      state.history = [];
+      saveHistory();
+      renderHistory([]);
+      clearResponses();
+    }
+
+    function openDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(FILE_DB, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(FILE_STORE)) {
+            db.createObjectStore(FILE_STORE);
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function idbSet(key, value) {
+      const db = await openDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(FILE_STORE, "readwrite");
+        tx.objectStore(FILE_STORE).put(value, key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function idbGet(key) {
+      const db = await openDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(FILE_STORE, "readonly");
+        const req = tx.objectStore(FILE_STORE).get(key);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function loadFileHandle() {
+      if (!window.showSaveFilePicker) {
+        fileStatusEl.textContent = "文件：浏览器不支持";
+        bindFileBtn.disabled = true;
+        return;
+      }
+      try {
+        const handle = await idbGet("historyFile");
+        if (handle) {
+          state.fileHandle = handle;
+          updateFileStatus();
+        }
+      } catch (error) {
+        fileStatusEl.textContent = "文件：读取失败";
+      }
+    }
+
+    function updateFileStatus() {
+      if (!state.fileHandle) {
+        fileStatusEl.textContent = "文件：未绑定";
+        return;
+      }
+      fileStatusEl.textContent = `文件：${state.fileHandle.name}`;
+    }
+
+    async function bindFile() {
+      if (!window.showSaveFilePicker) return;
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: "multiqa_history.jsonl",
+          types: [{ description: "JSON Lines", accept: { "application/json": [".jsonl", ".json"] } }],
+        });
+        state.fileHandle = handle;
+        await idbSet("historyFile", handle);
+        updateFileStatus();
+        await ensureWritePermission();
+      } catch (error) {
+        fileStatusEl.textContent = "文件：未绑定";
+      }
+    }
+
+    async function ensureWritePermission() {
+      if (!state.fileHandle) return false;
+      if (state.fileHandle.queryPermission) {
+        const status = await state.fileHandle.queryPermission({ mode: "readwrite" });
+        if (status === "granted") return true;
+      }
+      if (state.fileHandle.requestPermission) {
+        const status = await state.fileHandle.requestPermission({ mode: "readwrite" });
+        return status === "granted";
+      }
+      return false;
+    }
+
+    async function appendRecordToFile(record) {
+      if (!state.fileHandle) return;
+      const ok = await ensureWritePermission();
+      if (!ok) {
+        fileStatusEl.textContent = "文件：无写入权限";
+        return;
+      }
+      try {
+        const file = await state.fileHandle.getFile();
+        const writable = await state.fileHandle.createWritable({ keepExistingData: true });
+        const line = JSON.stringify(record) + "\n";
+        await writable.write({ type: "write", position: file.size, data: line });
+        await writable.close();
+      } catch (error) {
+        fileStatusEl.textContent = "文件：写入失败";
+      }
+    }
+
+    function exportOnce() {
+      const blob = new Blob([JSON.stringify(state.history, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "multiqa_history.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    renderModelSelector();
+    renderRanking();
+    loadHistory();
+    loadFileHandle();
+    loadBackground();
+
+    runBtn.addEventListener("click", () => {
+      if (!state.running) runQuery();
+    });
+
+    clearBtn.addEventListener("click", clearResponses);
+    clearHistoryBtn.addEventListener("click", clearHistory);
+
+    searchHistoryEl.addEventListener("input", (event) => {
+      filterHistory(event.target.value.trim());
+    });
+
+    selectAllBtn.addEventListener("click", () => {
+      const boxes = Array.from(document.querySelectorAll("input[name='model']"));
+      const allChecked = boxes.every((box) => box.checked);
+      boxes.forEach((box) => { box.checked = !allChecked; });
+    });
+
+    exampleBtn.addEventListener("click", () => {
+      questionInput.value = "写一篇 600 字左右的科幻短篇小说，包含一个意外转折，风格冷峻。";
+      questionInput.focus();
+    });
+
+    bindFileBtn.addEventListener("click", bindFile);
+    exportBtn.addEventListener("click", exportOnce);
+    regenFusionBtn.addEventListener("click", regenerateFusion);
+    setBgBtn.addEventListener("click", () => bgInput.click());
+    clearBgBtn.addEventListener("click", clearBackground);
+    bgInput.addEventListener("change", () => {
+      const file = bgInput.files?.[0];
+      if (file) setBackground(file);
+    });
+
+    questionInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        runBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>

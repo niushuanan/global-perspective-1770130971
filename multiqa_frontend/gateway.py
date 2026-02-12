@@ -7,13 +7,19 @@ from typing import Any
 import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 
 BASE_DIR = Path(__file__).resolve().parent
 INDEX_FILE = BASE_DIR / "index.html"
+LOCAL_SECRET_FILE = BASE_DIR / "secrets.local.json"
 
 MAX_ATTEMPTS = 3
 RETRYABLE_STATUS = {408, 409, 429, 500, 502, 503, 504}
+
+try:
+    LOCAL_SECRETS = json.loads(LOCAL_SECRET_FILE.read_text(encoding="utf-8")) if LOCAL_SECRET_FILE.exists() else {}
+except Exception:
+    LOCAL_SECRETS = {}
 
 PROVIDERS = {
     "zhipu": {
@@ -58,7 +64,12 @@ def get_provider(provider: str) -> dict[str, str]:
 
 
 def get_api_key(cfg: dict[str, str]) -> str:
-    return os.getenv(cfg["key_env"], cfg["default_key"]).strip()
+    key_name = cfg["key_env"]
+    return (
+        os.getenv(key_name, "")
+        or str(LOCAL_SECRETS.get(key_name, ""))
+        or cfg["default_key"]
+    ).strip()
 
 
 def build_payload(provider: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -202,6 +213,14 @@ async def index() -> FileResponse:
     if not INDEX_FILE.exists():
         raise HTTPException(status_code=404, detail="index.html 不存在")
     return FileResponse(INDEX_FILE)
+
+
+@app.get("/local_keys.js")
+async def local_keys_js():
+    file = BASE_DIR / "local_keys.js"
+    if file.exists():
+        return FileResponse(file, media_type="application/javascript")
+    return Response("window.__LOCAL_KEYS__ = {};\n", media_type="application/javascript")
 
 
 @app.get("/api/health")

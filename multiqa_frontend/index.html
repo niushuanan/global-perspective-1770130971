@@ -735,20 +735,22 @@
     </section>
   </div>
 
+  <script src="./local_keys.js"></script>
   <script>
+    const LOCAL_KEYS = window.__LOCAL_KEYS__ || {};
     const CONFIG = {
       timeoutMs: 90000,
       gatewayBase: "http://127.0.0.1:8787",
       apiKeys: {
-        openai: "YOUR_OPENAI_KEY",
-        anthropic: "YOUR_ANTHROPIC_KEY",
-        xai: "YOUR_XAI_KEY",
-        gemini: "YOUR_GOOGLE_KEY",
+        openai: LOCAL_KEYS.openai || "YOUR_OPENAI_KEY",
+        anthropic: LOCAL_KEYS.anthropic || "YOUR_ANTHROPIC_KEY",
+        xai: LOCAL_KEYS.xai || "YOUR_XAI_KEY",
+        gemini: LOCAL_KEYS.gemini || "YOUR_GOOGLE_KEY",
         moonshot: "USE_PY_GATEWAY",
         zhipu: "USE_PY_GATEWAY",
-        minimax: "YOUR_MINIMAX_KEY",
-        qwen: "YOUR_QWEN_KEY",
-        deepseek: "YOUR_DEEPSEEK_KEY",
+        minimax: LOCAL_KEYS.minimax || "YOUR_MINIMAX_KEY",
+        qwen: LOCAL_KEYS.qwen || "YOUR_QWEN_KEY",
+        deepseek: LOCAL_KEYS.deepseek || "YOUR_DEEPSEEK_KEY",
       },
       apiModels: {
         openai: "gpt-5.2",
@@ -1295,7 +1297,8 @@
     async function callModel(modelKey, prompt, onStream) {
       const apiKey = CONFIG.apiKeys[modelKey];
       const needFrontendKey = !["zhipu", "moonshot", "minimax"].includes(modelKey);
-      if (needFrontendKey && !apiKey) throw new Error("未填写 API Key");
+      const missingKey = !apiKey || /^YOUR_/i.test(apiKey);
+      if (needFrontendKey && missingKey) throw new Error("未填写 API Key");
 
       const model = CONFIG.apiModels[modelKey];
       const controller = new AbortController();

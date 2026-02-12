@@ -14,3 +14,5 @@
 - 历史记录支持按条删除。
 - 可用环境变量覆盖网关内置密钥：`ZHIPU_API_KEY`、`MOONSHOT_API_KEY`、`MINIMAX_API_KEY`。
 - 当 `kimi-2.5-thinking` 不可用时，网关会自动回退到 `kimi-k2-0711-preview`，也可通过 `MOONSHOT_FALLBACK_MODEL` 覆盖。
+- 前端私钥建议写到 `local_keys.js`（参考 `local_keys.example.js`），网关私钥建议写到 `secrets.local.json`（参考 `secrets.local.example.json`）。
+- `local_keys.js` 和 `secrets.local.json` 已加入 `.gitignore`，不会被提交到 GitHub。

@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 *.jsonl
+local_keys.js
+secrets.local.json

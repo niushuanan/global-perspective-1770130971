@@ -52,7 +52,7 @@ async def analyze_video(request: QueryRequest):
 
     async with get_client() as client:
         tasks = [fetch_video_for_lang(client, lang, query) for lang in LANGUAGES]
-        results = await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
     return {"query": query, "items": results}
 

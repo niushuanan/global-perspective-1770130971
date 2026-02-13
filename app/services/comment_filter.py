@@ -163,7 +163,7 @@ def _is_info_char(ch: str) -> bool:
 
 
 def _is_cjk(ch: str) -> bool:
-    return "\u4e00" <= ch <= "\u9fff" or "\u3040" <= ch <= "\u30ff"
+    return "\u4e00" <= ch <= "\u9fff" or "\u3040" <= ch <= "\u30ff" or "\uac00" <= ch <= "\ud7af"
 
 
 def _contains_blacklist(text: str, lang_key: str) -> bool:

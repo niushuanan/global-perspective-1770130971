@@ -160,23 +160,26 @@ async def _search_invidious_fallback(client, query: str) -> dict | None:
 async def _fetch_comments_invidious_fallback(client, video_id: str, limit: int = 10) -> list[dict]:
     from bs4 import BeautifulSoup
     for base_url in settings.invidious_instances:
-        response = await client.get(
-            f"{base_url.rstrip('/')}/api/v1/comments/{video_id}",
-            params={"sort_by": "top"},
-        )
-        if response.status_code >= 400:
+        try:
+            response = await client.get(
+                f"{base_url.rstrip('/')}/api/v1/comments/{video_id}",
+                params={"sort_by": "top"},
+            )
+            if response.status_code >= 400:
+                continue
+            data = response.json()
+            comments = data.get("comments", [])
+            results = []
+            for item in comments[:limit]:
+                content = item.get("content") or item.get("contentHtml") or ""
+                if content:
+                    cleaned = BeautifulSoup(content, "html.parser").get_text(" ", strip=True)
+                    if cleaned:
+                        results.append({"original": cleaned, "likeCount": int(item.get("likeCount", 0) or 0)})
+            results.sort(key=lambda x: x.get("likeCount", 0), reverse=True)
+            return results[:limit]
+        except Exception:
             continue
-        data = response.json()
-        comments = data.get("comments", [])
-        results = []
-        for item in comments[:limit]:
-            content = item.get("content") or item.get("contentHtml") or ""
-            if content:
-                cleaned = BeautifulSoup(content, "html.parser").get_text(" ", strip=True)
-                if cleaned:
-                    results.append({"original": cleaned, "likeCount": int(item.get("likeCount", 0) or 0)})
-        results.sort(key=lambda x: x.get("likeCount", 0), reverse=True)
-        return results[:limit]
     return []
 
 

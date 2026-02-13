@@ -33,7 +33,7 @@ async def chat(client, messages, temperature=0.2, max_tokens=800):
             json=payload,
         )
 
-        if response.status_code in {429, 500, 502, 503, 504}:
+        if response.status_code in {401, 429, 500, 502, 503, 504}:
             last_error = f"DeepSeek transient error {response.status_code}"
             if attempt < 2:
                 await asyncio.sleep(1.5 * (attempt + 1))
